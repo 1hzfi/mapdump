@@ -389,7 +389,7 @@ const drawRoute = async (
     if (includeRoute && route.length && route[0].time) {
       const dist = extractDistance(route);
       ctx4.fillText(
-        `${(dist / 1e3).toFixed(3)}km`,
+        `${(dist / 1e3).toFixed(1)}km |`,
         paletteX + paletteWidth + 35,
         paletteY
       );
@@ -405,7 +405,7 @@ const drawRoute = async (
           year: "numeric",
           month: "long",
           day: "numeric",
-          timeZoneName: "long",
+          timeZoneName: "short",
           hour12: false,
           hour: "numeric",
           minute: "numeric",
