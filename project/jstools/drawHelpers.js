@@ -389,8 +389,8 @@ const drawRoute = async (
     if (includeRoute && route.length && route[0].time) {
       const dist = extractDistance(route);
       ctx4.fillText(
-        `${(dist / 1e3).toFixed(1)}km |`,
-        paletteX + paletteWidth + 35,
+        `${(dist / 1e3).toFixed(1)}km   |`,
+        paletteX + paletteWidth + 45,
         paletteY
       );
       ctx4.fillText(
@@ -411,7 +411,7 @@ const drawRoute = async (
           minute: "numeric",
           second: "numeric",
         })}`,
-        paletteX + paletteWidth + 35,
+        paletteX + paletteWidth + 45,
         paletteY + 20
       );
     }
@@ -424,7 +424,7 @@ const drawRoute = async (
 };
 
 const getSpeedText = (s) => {
-  return `${s.toFixed(2)}km/h`;
+  return `${s.toFixed(1)}km/h`;
 };
 
 const printTime = (t) => {
