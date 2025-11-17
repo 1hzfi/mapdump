@@ -414,7 +414,7 @@ class Route(models.Model):
                     "generate_map.js",
                     img_file.name,
                     route_file.name,
-                    json.dumps(self.raster_map.bounds),
+                    self.raster_map.corners_coordinates,
                     arg,
                     self.tz,
                 ],
