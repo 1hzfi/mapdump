@@ -3,26 +3,38 @@ const { loadImage } = require("canvas");
 const { drawRoute } = require("./drawHelpers");
 
 void async function (sysArgs) {
-  const [imgFile, routeFile, cornersCoords, outputType, timezone] = sysArgs;
-  const img = await loadImage(imageFile);
-  const cornersRaw = cornersCoords.split(",");
-  const corners = {
-    top_left: {lat: parseFloat(cornersRaw[0]), lon: parseFloat(cornersRaw[1])},
-    top_right: {lat: parseFloat(cornersRaw[2]), lon: parseFloat(cornersRaw[3])},
-    bottom_right: {lat: parseFloat(cornersRaw[4]), lon: parseFloat(cornersRaw[5])},
-    bottom_left: {lat: parseFloat(cornersRaw[6]), lon: parseFloat(cornersRaw[7])},
+  const [mapImageFile, mapImageCornersCoordsRaw, locationsFile, showHeaderRaw, showRouteRaw, timezone] = sysArgs;
+  const mapImage = await loadImage(mapImageFile);
+  const mapImageCornersCoordsArray = cornersCoords.split(",").map((val) => parseFloat(val));
+  const mapImageCornersCoords = {
+    top_left: {
+      lat: mapImageCornersCoordsArray[0],
+      lon: mapImageCornersCoordsArray[1]
+    },
+    top_right: {
+      lat: mapImageCornersCoordsArray[2],
+      lon: mapImageCornersCoordsArray[3]
+    },
+    bottom_right: {
+      lat: mapImageCornersCoordsArray[4],
+      lon: mapImageCornersCoordsArray[5]
+    },
+    bottom_left: {
+      lat: mapImageCornersCoordsArray[6],
+      lon: mapImageCornersCoordsArray[7]
+    },
   };
-  const showHeader = outputType.includes("h");
-  const showRoute = outputType.includes("r");
-  const routeJSON = fs.readFileSync(routeFile, { encoding: "utf8", flag: "r" });
-  const routeRaw = JSON.parse(routeJSON);
-  const route = routeRaw.map((p) => {
+  const showHeader = showHeaderRaw === "1";
+  const showRoute = showRouteRaw === "1";
+  const locationsRaw = fs.readFileSync(locationsFile, { encoding: "utf8", flag: "r" });
+  const locationsJson = JSON.parse(locationsRaw);
+  const locations = routeJson.map((p) => {
     return { time: p.time * 1e3, latLon: p.latlon };
   });
   const canvas = await drawRoute(
-    img,
-    corners,
-    route,
+    mapImage,
+    mapImageCornersCoords,
+    locations,
     showHeader,
     showRoute,
     timezone
