@@ -392,9 +392,9 @@ class Route(models.Model):
         self.route_json = json.dumps(value)
 
     def route_image(self, header=True, route=True):
-        arg = "_h" if header else ""
-        arg += "_r" if route else ""
-        cache_key = f"route_{self.images_path}{arg}"
+        header_arg = "1" if header else "0"
+        route_arg = "1" if route else "0"
+        cache_key = f"route:{self.images_path}:{header_arg}:{route_arg}"
         cached = cache.get(cache_key)
         if cached:
             return cached
@@ -413,9 +413,10 @@ class Route(models.Model):
                     settings.NODEJS_PATH,
                     "generate_map.js",
                     img_file.name,
-                    route_file.name,
                     self.raster_map.corners_coordinates,
-                    arg,
+                    route_file.name,
+                    header_arg,
+                    route_arg,
                     self.tz,
                 ],
                 cwd=os.path.join(settings.BASE_DIR, "jstools"),
