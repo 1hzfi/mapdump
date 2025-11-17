@@ -418,7 +418,6 @@ class Route(models.Model):
                     arg,
                     self.tz,
                 ],
-                stderr=subprocess.STDOUT,
                 cwd=os.path.join(settings.BASE_DIR, "jstools"),
                 env=dict(os.environ, NODE_OPTIONS="--openssl-legacy-provider"),
             )
