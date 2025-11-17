@@ -4,8 +4,7 @@ const { drawRoute } = require("./drawHelpers");
 
 void async function (sysArgs) {
   const [mapImageFile, mapImageCornersCoordsRaw, locationsFile, showHeaderRaw, showRouteRaw, timezone] = sysArgs;
-  const mapImage = await loadImage(mapImageFile);
-  const mapImageCornersCoordsArray = cornersCoords.split(",").map((val) => parseFloat(val));
+  const mapImageCornersCoordsArray = mapImageCornersCoordsRaw.split(",").map((val) => parseFloat(val));
   const mapImageCornersCoords = {
     top_left: {
       lat: mapImageCornersCoordsArray[0],
@@ -28,9 +27,10 @@ void async function (sysArgs) {
   const showRoute = showRouteRaw === "1";
   const locationsRaw = fs.readFileSync(locationsFile, { encoding: "utf8", flag: "r" });
   const locationsJson = JSON.parse(locationsRaw);
-  const locations = routeJson.map((p) => {
-    return { time: p.time * 1e3, latLon: p.latlon };
+  const locations = locationsJson.map((pt) => {
+    return { time: pt.time * 1000, latLon: pt.latlon };
   });
+  const mapImage = await loadImage(mapImageFile);
   const canvas = await drawRoute(
     mapImage,
     mapImageCornersCoords,
