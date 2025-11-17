@@ -29,5 +29,4 @@ void async function (sysArgs) {
   );
   const dataURI = canvas.toDataURL("image/jpeg", { quality: 0.9 });
   process.stdout.write(dataURI);
-  process.exit(0);
 }(process.argv.slice(2));
