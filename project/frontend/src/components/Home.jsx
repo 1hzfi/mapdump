@@ -113,9 +113,11 @@ const Home = ({ history }) => {
           </div>
         )}
       </div>
+      {!username && (
       <div className="container main-container">
         <LatestRoutes />
       </div>
+      )}
     </>
   );
 };
