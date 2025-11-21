@@ -450,18 +450,6 @@ function NewMap({history}) {
                   />
                 </>
               )}
-              <hr />
-              or{" "}
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={() => {
-                  setDrawRoute(true);
-                  setName("Untitled Run");
-                }}
-              >
-                <i className="fas fa-pen"></i> Draw route manually
-              </button>
             </>
           )}
           {(drawRoute || route) && !mapDataURL && (
