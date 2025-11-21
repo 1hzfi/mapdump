@@ -107,8 +107,6 @@ const Home = ({ history }) => {
             <hr />
             <div>
               <Link to="/new">Test without Registering</Link>
-              <br />
-              <Link to="/map">Browse Maps</Link>
             </div>
           </div>
         )}
