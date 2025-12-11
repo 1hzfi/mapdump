@@ -11,7 +11,7 @@ import {
   getFlagEmoji,
 } from "../utils";
 
-const LatestRoute = (props) => {
+const LatestRoute = () => {
   const [routes, setRoutes] = React.useState([]);
   const [isLoading, setLoading] = React.useState(true);
   const observerTarget = React.useRef(null);
@@ -21,10 +21,8 @@ const LatestRoute = (props) => {
   const { api_token } = globalState.user;
 
   React.useEffect(() => {
-    nextPage.current =
-      import.meta.env.VITE_API_URL +
-      (props?.tag ? "/v1/routes-by-tag/" + props.tag : "/v1/latest-routes/");
-  }, [props.tag]);
+    nextPage.current = `${import.meta.env.VITE_API_URL}mapdump/feed`;
+  }, []);
 
   const fetchData = React.useCallback(async () => {
     const url = nextPage.current;
@@ -32,7 +30,7 @@ const LatestRoute = (props) => {
       setLoading(true);
       const headers = {};
       if (api_token) {
-        headers.Authorization = "Token " + api_token;
+        headers.Authorization = "Bearer " + api_token;
       }
       try {
         const res = await fetch(url, {
@@ -76,30 +74,20 @@ const LatestRoute = (props) => {
   return (
     <>
       <h3 style={{ textAlign: "center" }}>
-        {props?.tag
-          ? 'Routes tagged "' + props.tag + '"'
-          : "Latest Routes on Mapdump.com "}
-        {!props?.tag && (
-          <a href={import.meta.env.VITE_API_URL + "/v1/latest-routes/feed/"}>
-            <i className="fa fa-rss" title="RSS"></i>
-          </a>
-        )}
+        <span>Latest Maps </span>
       </h3>
       <div className="container" style={{ textAlign: "left" }}>
         {routes === false && (
           <div style={{ textAlign: "center" }}>
             <span>
-              <i className="fa fa-spinner fa-spin"></i> Loading
+              <i className="fa fa-spinner fa-spin"></i> Loading...
             </span>
           </div>
         )}
         {routes &&
           (!routes.length && !isLoading ? (
             <div style={{ textAlign: "center" }}>
-              <span>
-                {props?.tag
-                  ? 'No routes tagged "' + props.tag + '"...'
-                  : "No routes have been yet uploaded..."}
+              <span>No maps have been yet dumped...
               </span>
             </div>
           ) : (
@@ -111,7 +99,7 @@ const LatestRoute = (props) => {
                   style={{ marginBottom: "15px" }}
                 >
                   <div className="card route-card">
-                    <Link to={"/routes/" + r.id}>
+                    <Link to={"/map/" + r.id}>
                       <LazyImage
                         src={
                           r.map_thumbnail_url +
@@ -125,16 +113,7 @@ const LatestRoute = (props) => {
                         <div
                           style={{ marginRight: "10px", textAlign: "center" }}
                         >
-                          <img
-                            src={
-                              import.meta.env.VITE_AVATAR_ROOT +
-                              "/athletes/" +
-                              r.athlete.username +
-                              ".png"
-                            }
-                            alt="profile"
-                            style={{ borderRadius: "50%", width: "40px" }}
-                          ></img>
+                          <i className="text-muted fa-3x fa-solid fa-circle-user"></i>
                           <br />
                           <span
                             title={regionNames.of(r.country)}
@@ -162,7 +141,7 @@ const LatestRoute = (props) => {
                               >
                                 <Link
                                   style={{ zIndex: 2, position: "relative" }}
-                                  to={"/athletes/" + r.athlete.username}
+                                  to={"/" + r.athlete.username}
                                 >
                                   {r.athlete.first_name && r.athlete.last_name
                                     ? capitalizeFirstLetter(
@@ -196,7 +175,7 @@ const LatestRoute = (props) => {
                                       overflow: "hidden",
                                       textOverflow: "ellipsis",
                                     }}
-                                    to={"/routes/" + r.id}
+                                    to={"/map/" + r.id}
                                     className={"stretched-link"}
                                   >
                                     {r.name}

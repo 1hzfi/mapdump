@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
-import { validateCornersCoords } from "../utils/fileHelpers";
 import { Link } from "react-router-dom";
 import CalibrationTool from "./CalibrationTool";
+import { validateCornersCoords } from "../utils/fileHelpers";
 
 const CornersCoordsInput = (props) => {
   const [coords, setCoords] = useState();

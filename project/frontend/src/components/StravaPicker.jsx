@@ -18,12 +18,12 @@ const Settings = (props) => {
     if (api_token) {
       (async () => {
         const res = await fetch(
-          import.meta.env.VITE_API_URL + "/v1/strava/token",
+          import.meta.env.VITE_API_URL + "mapdump/strava/token",
           {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              Authorization: "Token " + api_token,
+              Authorization: "Bearer " + api_token,
             },
           }
         );
@@ -72,7 +72,7 @@ const Settings = (props) => {
     qp.set(
       "redirect_uri",
       import.meta.env.VITE_API_URL +
-        "/v1/strava/authorization?auth_token=" +
+        "mapdump/strava/authorization?auth_token=" +
         api_token
     );
     qp.set("response_type", "code");
@@ -102,23 +102,8 @@ const Settings = (props) => {
         }
       );
       const act = await actRaw.json();
-      /*
       const dataRaw = await fetch(
-        "https://www.strava.com/api/v3/activities/" +
-          a.id +
-          "/streams?key_by_type=true&keys=time,latlng",
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + stravaToken,
-          },
-          mode: 'cors'
-        }
-      );
-      */
-
-      const dataRaw = await fetch(
-        `${import.meta.env.VITE_API_URL}/v1/strava/get-gpx?id=${a.id}&auth=${stravaToken}`,
+        `${import.meta.env.VITE_API_URL}mapdump/strava/get-gpx?id=${a.id}&auth=${stravaToken}`,
         {
           headers: {
             "Content-Type": "application/json",

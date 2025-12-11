@@ -2,23 +2,11 @@ import React from "react";
 import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
 import Login from "./components/Login";
 import Home from "./components/Home";
-import RasterMap from "./components/RasterMap";
-import RasterMapRedirect from "./components/RasterMapRedirect";
-import LoginPage from "./components/LoginPage";
-import LoginAsPage from "./components/LoginAsPage";
+import EventPage from "./components/EventPage";
+import RCLoginPage from "./components/RCLoginPage";
 import UserView from "./components/UserView";
 import NewMap from "./components/NewMap";
 import NotFound from "./components/NotFound";
-import TOS from "./components/TOS";
-import PrivacyPolicy from "./components/PrivacyPolicy";
-import Register from "./components/Register";
-import VerifyEmail from "./components/VerifyEmail";
-import PasswordReset from "./components/PasswordReset";
-import Settings from "./components/Settings";
-import BrowseMap from "./components/BrowseMap";
-import RoutesForTag from "./components/RoutesForTag";
-import PasswordResetConfirmation from "./components/PasswordResetConfirmation";
-import UserDeletionConfirmation from "./components/UserDeletionConfirmation";
 import { GlobalStateProvider } from "./utils/useGlobalState";
 
 window.drawmyroute = {};
@@ -80,10 +68,10 @@ function App() {
                   style={{ padding: "5px" }}
                 />
               </span>{" "}
-              <small>Mapdump.com</small>
+              <small>MapDump.com</small>
             </h1>
-            <p style={{ padding: "0 0 30px 0", margin: "-10px 0 0 0" }}>
-              WHERE YOUR MAPS END THEIR LIFE...
+            <p style={{ padding: "0 0 0 30px", margin: "-10px 0 0 0" }}>
+              WHERE MAPS END THEIR LIFE...
             </p>
           </Link>
         </div>
@@ -91,53 +79,28 @@ function App() {
         <Route path="/" />
         <Switch>
           <Route exact path="/" component={Home} />
-          <Route exact path="/routes/tag/:tag" component={RoutesForTag} />
           <Route exact path="/new" component={NewMap} />
-          <Route exact path="/map" component={BrowseMap} />
-          <Route exact path="/tos" component={TOS} />
-          <Route exact path="/privacy-policy" component={PrivacyPolicy} />
-          <Route exact path="/login" component={LoginPage} />
-          <Route exact path="/login-as" component={LoginAsPage} />
-          <Route exact path="/sign-up" component={Register} />
-          <Route exact path="/settings" component={Settings} />
-          <Route exact path="/password-reset" component={PasswordReset} />
+          <Route exact path="/login" component={RCLoginPage} />
+          <Route exact path="/map/:uid/" component={EventPage} />
+          <Route exact path="/:username" component={UserView} />
           <Route
             exact
-            path="/password-reset-confirmation/:key"
-            component={PasswordResetConfirmation}
-          />
-          <Route
-            exact
-            path="/account-deletion-confirmation/:key"
-            component={UserDeletionConfirmation}
-          />
-          <Route exact path="/verify-email/" component={VerifyEmail} />
-          <Route exact path="/verify-email/:key" component={VerifyEmail} />
-          <Route exact path="/routes/:uid/" component={RasterMap} />
-          <Route
-            exact
-            path="/routes/:uid/player"
-            component={RasterMapRedirect}
-          />
-          <Route exact path="/athletes/:username" component={UserView} />
-          <Route
-            exact
-            path="/athletes/:username/:date(\d{4}-\d{2}-\d{2})"
+            path="/:username/:year(\d{4})"
             component={UserView}
           />
           <Route
             exact
-            path="/athletes/:username/:year(\d{4})"
+            path="/:username/:date(\d{4}-\d{2}-\d{2})"
             component={UserView}
           />
           <Route exact path="*" component={NotFound} />
         </Switch>
         <footer className="container-fluid text-center">
           <span>
-            &copy;2019-{new Date().getFullYear()}&nbsp;Mapdump.com -{" "}
+            &copy;2019-{new Date().getFullYear()}&nbsp;mapdump.com -{" "}
             <a href="mailto:info@mapdump.com">Contact</a> -{" "}
-            <Link to="/privacy-policy">Privacy Policy</Link> -{" "}
-            <Link to="/tos">Terms of Service</Link>
+            <a href="/privacy-policy">Privacy Policy</a> -{" "}
+            <a href="/tos">Terms of Service</a>
           </span>
           <br />
           <img

@@ -1,13 +1,12 @@
 import React, { useEffect } from "react";
+import Swal from "sweetalert2";
+import GpsFileDropzone from "./GpsFileDropzone";
+import ImageDropzone from "./ImgDrop";
 import JSZip from "jszip";
 import { pdfjs as pdfjsLib } from "react-pdf";
-import Swal from "sweetalert2";
 import FitParser from "fit-file-parser";
 import gpxParser from "gpxparser";
-import GPXDropzone from "./GPXDrop";
-import ImageDropzone from "./ImgDrop";
-import RouteDrawing from "./RouteDrawing";
-import PathDrawing from "./PathDrawing";
+import EventPreview from "./EventPreview";
 import RemoteMapPicker from "./RemoteMapPicker";
 import StravaPicker from "./StravaPicker";
 import CornerCoordsInput from "./CornerCoordsInput";
@@ -26,9 +25,8 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
 
 function NewMap({history}) {
   const globalState = useGlobalState();
-  const { username } = globalState.user;
+  const { user_logged_in_as } = globalState.user;
   const [route, _setRoute] = React.useState();
-  const [drawRoute, setDrawRoute] = React.useState(false);
   const [mapCornersCoords, setMapCornersCoords] = React.useState();
   const [mapDataURL, _setMapDataURL] = React.useState();
   const [name, setName] = React.useState();
@@ -71,7 +69,7 @@ function NewMap({history}) {
     } catch (e) {
       Swal.fire({
         title: "Error!",
-        text: "Error parsing your GPX file!",
+        text: "Error parsing your file!",
         icon: "error",
         confirmButtonText: "OK",
       });
@@ -79,6 +77,15 @@ function NewMap({history}) {
     }
     const newRoute = [];
     for (const pos of gpx.tracks[0]?.points || []) {
+      if (!pos.time) {
+        Swal.fire({
+          title: "Error!",
+          text: "Could not find timestamp in your file!",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+        return
+      }
       if (pos.lat) {
         newRoute.push({ time: pos.time, latlng: [pos.lat, pos.lon] });
       }
@@ -156,24 +163,24 @@ function NewMap({history}) {
     });
   };
 
-  const onDropGPX = (acceptedFiles) => {
+  const onDropGpsFile = (acceptedFiles) => {
     if (!acceptedFiles.length) {
       return;
     }
-    const gpxFile = acceptedFiles[0];
-    const filename = gpxFile.name;
+    const gpsFile = acceptedFiles[0];
+    const filename = gpsFile.name;
     setName(filename.slice(0, -4).slice(0, 52));
     const fr = new FileReader();
     if (filename.toLowerCase().endsWith(".tcx")) {
       fr.onload = onTCXLoaded;
     } else if (filename.toLowerCase().endsWith(".fit")) {
       fr.onload = onFITLoaded;
-      fr.readAsArrayBuffer(gpxFile);
+      fr.readAsArrayBuffer(gpsFile);
       return;
     } else {
       fr.onload = onGPXLoaded;
     }
-    fr.readAsText(gpxFile);
+    fr.readAsText(gpsFile);
   };
 
   const onImgLoaded = (e) => {
@@ -398,7 +405,6 @@ function NewMap({history}) {
     setRoute(null);
     setMapDataURL("");
     setMapCornersCoords(null);
-    setDrawRoute(false);
   };
 
   useEffect(() => {
@@ -434,11 +440,11 @@ function NewMap({history}) {
     <>
       <div className="container main-container">
         <div className="App">
-          {!route && !drawRoute && (
+          {!route && (
             <>
               <h1>GPS File</h1>
-              <GPXDropzone onDrop={onDropGPX} />
-              {username && (
+              <GpsFileDropzone onDrop={onDropGpsFile} />
+              {user_logged_in_as && (
                 <>
                   <hr />
                   <StravaPicker
@@ -450,21 +456,9 @@ function NewMap({history}) {
                   />
                 </>
               )}
-              <hr />
-              or{" "}
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={() => {
-                  setDrawRoute(true);
-                  setName("Untitled Run");
-                }}
-              >
-                <i className="fas fa-pen"></i> Draw route manually
-              </button>
-            </>
+          </>
           )}
-          {(drawRoute || route) && !mapDataURL && (
+          {route && !mapDataURL && (
             <>
               <h1>Map Image File</h1>
               <ImageDropzone onDrop={onDropImg} />
@@ -476,7 +470,7 @@ function NewMap({history}) {
               </button>
             </>
           )}
-          {(drawRoute || route) && mapDataURL && !mapCornersCoords && (
+          {route && mapDataURL && !mapCornersCoords && (
             <>
               <h1>Calibration</h1>
               <CornerCoordsInput
@@ -488,18 +482,10 @@ function NewMap({history}) {
               />
             </>
           )}
-          {drawRoute && !route && mapDataURL && mapCornersCoords && (
-            <PathDrawing
-              mapCornersCoords={mapCornersCoords}
-              mapDataURL={mapDataURL}
-              onRoute={setRoute}
-              onUndo={() => onRemoveMap()}
-            />
-          )}
         </div>
       </div>
       {route && mapDataURL && mapCornersCoords && (
-        <RouteDrawing
+        <EventPreview
           route={route}
           mapCornersCoords={mapCornersCoords}
           mapDataURL={mapDataURL}

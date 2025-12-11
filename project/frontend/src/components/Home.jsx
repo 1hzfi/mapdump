@@ -1,27 +1,26 @@
 import React from "react";
 import LatestRoutes from "./LatestRoutes";
-import LatestLikes from "./LatestLikes";
 import { Helmet } from "react-helmet";
 
 import { Link } from "react-router-dom";
 import useGlobalState from "../utils/useGlobalState";
 import { capitalizeFirstLetter } from "../utils";
 
-const Home = ({ history }) => {
+const Home = ({}) => {
   const [userData, setUserData] = React.useState(null);
   const globalState = useGlobalState();
-  const { api_token, username } = globalState.user;
+  const { api_token, user_logged_in_as } = globalState.user;
 
   React.useEffect(() => {
     if (api_token) {
       (async () => {
         const res = await fetch(
-          import.meta.env.VITE_API_URL + "/v1/auth/user/",
+          import.meta.env.VITE_API_URL + "mapdump/self",
           {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              Authorization: "Token " + api_token,
+              Authorization: "Bearer " + api_token,
             },
           }
         );
@@ -36,29 +35,20 @@ const Home = ({ history }) => {
   return (
     <>
       <Helmet>
-        <title>Mapdump.com</title>
+        <title>my.mapdump.com</title>
       </Helmet>
       <div className="container" style={{ textAlign: "center" }}>
-        {username && userData && (
+          {user_logged_in_as && userData && (
           <div
             className="col-12 col-md-6 offset-md-3"
             style={{ marginBottom: "15px", zIndex: 100 }}
           >
             <div style={{ textAlign: "center" }}>
               <div style={{ textAlign: "center" }}>
-                <img
-                  src={
-                    import.meta.env.VITE_AVATAR_ROOT +
-                    "/athletes/" +
-                    username +
-                    ".png"
-                  }
-                  alt="profile"
-                  style={{ borderRadius: "50%", width: "80px" }}
-                ></img>
+                <i className="fa-5x fa-solid fa-circle-user text-muted"></i>
               </div>
               <Link
-                to={"/athletes/" + username}
+                to={"/" + userData.username}
                 style={{
                   color: "black",
                   fontSize: "1.7em",
@@ -74,15 +64,12 @@ const Home = ({ history }) => {
             </div>
             <hr />
             <div>
-              <Link to={"/athletes/" + username}>Your Activities</Link> -{" "}
-              <Link to="/new">Upload New Route</Link>
-              <br />
-              <Link to="/map">Browse Maps</Link>
-              <LatestLikes history={history}/>
+              <Link to={"/" + userData.username}>Your Activities</Link> -{" "}
+              <Link to="/new">Upload New Map</Link>
             </div>
           </div>
         )}
-        {!username && (
+        {!user_logged_in_as && (
           <div
             className="col-12 col-md-6 offset-md-3"
             style={{ marginBottom: "15px" }}
@@ -96,9 +83,7 @@ const Home = ({ history }) => {
             >
               You are not logged in...
               <br />
-              <Link to={"/sign-up"}>
-                <button type="button" className="btn btn-primary btn-success">Sign Up</button>
-              </Link>
+              <a href="https://dashboard.routechoices.com/signup" className="btn btn-primary btn-success">Sign Up</a>
               <span style={{ fontSize: ".7em", fontWeight: "normal" }}>
                 {" "}
                 or <Link to={"/login"}>Login</Link>
@@ -107,14 +92,9 @@ const Home = ({ history }) => {
             <hr />
             <div>
               <Link to="/new">Test without Registering</Link>
-              <br />
-              <Link to="/map">Browse Maps</Link>
             </div>
           </div>
         )}
-      </div>
-      <div className="container main-container">
-        <LatestRoutes />
       </div>
     </>
   );

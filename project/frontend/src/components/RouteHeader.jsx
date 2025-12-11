@@ -311,16 +311,7 @@ const RouteHeader = (props) => {
           }}
         >
           <div style={{ marginRight: "10px", textAlign: "center" }}>
-            <img
-              src={
-                import.meta.env.VITE_AVATAR_ROOT +
-                "/athletes/" +
-                props.athlete.username +
-                ".png"
-              }
-              alt="profile"
-              style={{ borderRadius: "50%", width: "80px" }}
-            ></img>
+            <i className="text-muted fa-3x fa-solid fa-circle-user"></i>
             <br />
             <span
               title={regionNames.of(props.country)}

@@ -31,9 +31,9 @@ const UserView = ({ match, history }) => {
   const [found, setFound] = React.useState(null);
   const [loading, setLoading] = React.useState(null);
   const [data, setData] = React.useState(null);
-  const [routes, setRoutes] = React.useState([]);
+  const [activities, setActivities] = React.useState([]);
   const [calendarVal, setCalendarVal] = React.useState([]);
-  const [years, setYears] = React.useState([]);
+  const [years, setYears] = React.useState([new Date().getFullYear()]);
   const [selectedYear, setSelectedYear] = React.useState(false);
 
   const globalState = useGlobalState();
@@ -51,10 +51,10 @@ const UserView = ({ match, history }) => {
       setLoading(true);
       const headers = {};
       if (api_token) {
-        headers.Authorization = "Token " + api_token;
+        headers.Authorization = "Bearer " + api_token;
       }
       const res = await fetch(
-        import.meta.env.VITE_API_URL + "/v1/user/" + match.params.username,
+        import.meta.env.VITE_API_URL + "mapdump/user-" + match.params.username,
         {
           credentials: "omit",
           headers,
@@ -94,7 +94,7 @@ const UserView = ({ match, history }) => {
     }
     if (data?.routes) {
       if (match.params.date) {
-        setRoutes(
+        setActivities(
           data.routes.filter(
             (r) =>
               DateTime.fromISO(r.start_time, { zone: r.tz }).toFormat(
@@ -103,7 +103,7 @@ const UserView = ({ match, history }) => {
           )
         );
       } else if (match.params.year) {
-        setRoutes(
+        setActivities(
           data.routes.filter(
             (r) =>
               DateTime.fromISO(r.start_time, { zone: r.tz }).toFormat(
@@ -112,7 +112,7 @@ const UserView = ({ match, history }) => {
           )
         );
       } else {
-        setRoutes(data.routes);
+        setActivities(data.routes);
       }
     }
   }, [match.params.date, match.params.year, data?.routes]);
@@ -134,26 +134,24 @@ const UserView = ({ match, history }) => {
 
   React.useEffect(() => {
     const val = [];
-    if (data?.routes) {
-      let yesterday = selectedYear
-        ? DateTime.local(parseInt(selectedYear, 10), 12, 31)
-            .startOf("day")
-            .toJSDate()
-        : DateTime.fromJSDate(new Date()).startOf("day").toJSDate();
-      const dates = data.routes.map((r) =>
-        DateTime.fromISO(r.start_time, { zone: r.tz })
+    let yesterday = selectedYear
+      ? DateTime.local(parseInt(selectedYear, 10), 12, 31)
           .startOf("day")
-          .toISODate()
-      );
-      for (let i = 0; i < 368; i++) {
-        const count = dates.filter(
-          ((yesterdayString) => {
-            return (dayString) => dayString === yesterdayString;
-          })(DateTime.fromJSDate(yesterday).toISODate())
-        ).length;
-        val.push({ date: yesterday, count });
-        yesterday = shiftDate(yesterday, -1);
-      }
+          .toJSDate()
+      : DateTime.fromJSDate(new Date()).startOf("day").toJSDate();
+    const dates = data?.routes?.map((r) =>
+      DateTime.fromISO(r.start_time, { zone: r.tz })
+        .startOf("day")
+        .toISODate()
+    ) || [];
+    for (let i = 0; i < 368; i++) {
+      const count = dates.filter(
+        ((yesterdayString) => {
+          return (dayString) => dayString === yesterdayString;
+        })(DateTime.fromJSDate(yesterday).toISODate())
+      ).length;
+      val.push({ date: yesterday, count });
+      yesterday = shiftDate(yesterday, -1);
     }
     setCalendarVal(val);
   }, [data?.routes, selectedYear]);
@@ -165,7 +163,7 @@ const UserView = ({ match, history }) => {
 
   const getCountryStats = () => {
     const val = {};
-    routes.forEach((r) => {
+    activities.forEach((r) => {
       if (val[r.country]) {
         val[r.country] += 1;
       } else {
@@ -208,33 +206,17 @@ const UserView = ({ match, history }) => {
           </Helmet>
           <div style={{ display: "flex", justifyContent: "flex-start" }}>
             <div style={{ marginRight: "15px" }}>
-              <img
-                src={`${import.meta.env.VITE_AVATAR_ROOT}/athletes/${data.username}.png`}
-                alt="avatar"
-                style={{ borderRadius: "50%" }}
-                height="75px"
-                width="75px"
-              ></img>
+            <i className="text-muted fa-4x fa-solid fa-circle-user"></i>
             </div>
             <div>
               <h2>
-                <Link to={`/athletes/${data.username}`}>
+                <Link to={`/${data.username}`}>
                   {data.first_name && data.last_name
                     ? capitalizeFirstLetter(data.first_name) +
                       " " +
                       capitalizeFirstLetter(data.last_name)
                     : data.username}
                 </Link>{" "}
-                <a
-                  href={
-                    import.meta.env.VITE_API_URL +
-                    "/v1/user/" +
-                    match.params.username +
-                    "/feed/"
-                  }
-                >
-                  <i className="fa fa-rss" title="RSS"></i>
-                </a>
               </h2>
               <h5>@{data.username}</h5>
             </div>
@@ -243,10 +225,10 @@ const UserView = ({ match, history }) => {
             {years.map((y) => (
               <span key={y}>
                 {selectedYear !== y ? (
-                  <Link to={`/athletes/${data.username}/${y}`}>{y}</Link>
+                  <Link to={`/${data.username}/${y}`}>{y}</Link>
                 ) : (
                   <b>
-                    <Link to={`/athletes/${data.username}/${y}`}>{y}</Link>
+                    <Link to={`/${data.username}/${y}`}>{y}</Link>
                   </b>
                 )}
                 <> </>
@@ -292,7 +274,7 @@ const UserView = ({ match, history }) => {
                   const dateStr = DateTime.fromJSDate(v.date).toFormat(
                     "yyyy-MM-dd"
                   );
-                  history.push(`/athletes/${data.username}/${dateStr}`);
+                  history.push(`/${data.username}/${dateStr}`);
                 }
               }}
             ></CalendarHeatmap>
@@ -300,15 +282,15 @@ const UserView = ({ match, history }) => {
           </>
           {match.params.date ? (
             <h3>
-              Routes on{" "}
+              Maps on{" "}
               {DateTime.fromISO(match.params.date, { setZone: false }).toFormat(
                 "DDDD"
               )}
             </h3>
           ) : match.params.year ? (
-            <h3>Routes in {match.params.year}</h3>
+            <h3>Maps in {match.params.year}</h3>
           ) : (
-            <h3>All Routes</h3>
+            <h3>All Maps</h3>
           )}
           {getCountryStats()
             .map((c) => (
@@ -324,18 +306,18 @@ const UserView = ({ match, history }) => {
             }, null)}
           <hr />
           <h3 data-testid="routeCount">
-            {routes.length} Route{routes.length === 1 ? "" : "s"}
+            {activities.length} Map{activities.length === 1 ? "" : "s"}
           </h3>
           <div className="container">
             <div className="row">
-              {routes.map((r) => (
+              {activities.map((r) => (
                 <div
                   key={r.id}
                   className="col-12 col-md-4"
                   style={{ marginBottom: "15px" }}
                 >
                   <div className="card route-card">
-                    <Link to={"/routes/" + r.id}>
+                    <Link to={"/map/" + r.id}>
                       <LazyImage
                         src={
                           r.map_thumbnail_url +
@@ -349,16 +331,7 @@ const UserView = ({ match, history }) => {
                         <div
                           style={{ marginRight: "10px", textAlign: "center" }}
                         >
-                          <img
-                            src={
-                              import.meta.env.VITE_AVATAR_ROOT +
-                              "/athletes/" +
-                              data.username +
-                              ".png"
-                            }
-                            alt="profile"
-                            style={{ borderRadius: "50%", width: "40px" }}
-                          ></img>
+                          <i className="text-muted fa-3x fa-solid fa-circle-user"></i>
                           <br />
                           <span
                             title={regionNames.of(r.country)}
@@ -386,7 +359,7 @@ const UserView = ({ match, history }) => {
                               >
                                 <Link
                                   style={{ zIndex: 2, position: "relative" }}
-                                  to={"/athletes/" + data.username}
+                                  to={"/" + data.username}
                                 >
                                   {data.first_name && data.last_name
                                     ? capitalizeFirstLetter(data.first_name) +

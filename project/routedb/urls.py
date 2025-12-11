@@ -3,16 +3,8 @@ from django.urls import include, path, re_path
 from . import feeds, views
 
 urlpatterns = [
-    path("routes/new", views.RouteCreate.as_view(), name="route_create"),
-    path("latest-routes/", views.LatestRoutesList.as_view(), name="latest_routes_list"),
-    path("latest-likes/", views.likes_received_view, name="like_received_view"),
-    re_path(
-        r"^routes-by-tag/(?P<tag>[a-zA-Z0-9_]+)/?$",
-        views.RoutesForTagList.as_view(),
-        name="routes_by_tag_list",
-    ),
-    path("latest-routes/feed/", feeds.latest_routes_feed, name="latest_routes_feed"),
-    path("maps/", views.MapsList.as_view(), name="maps_list"),
+    path("new.json", views.RouteCreate.as_view(), name="route_create"),
+    path("home-feed.json", views.LatestRoutesList.as_view(), name="latest_routes_list"),
     re_path(
         r"^user/(?P<username>[a-zA-Z0-9_-]+)/?$",
         views.UserDetail.as_view(),

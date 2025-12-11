@@ -48,11 +48,11 @@ This also allows us to keep all of this state logic in this one file
 const useGlobalState = () => {
   const [state, dispatch] = useContext(GlobalStateContext);
 
-  const setUser = ({ username, api_token }) => {
+  const setUser = ({ user_logged_in_as, api_token }) => {
     dispatch({
       type: SET_USER,
       payload: {
-        username,
+        user_logged_in_as,
         api_token,
       },
     });
