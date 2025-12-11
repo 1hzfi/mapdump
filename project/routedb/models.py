@@ -259,7 +259,7 @@ class RasterMap(models.Model):
 
     @property
     def thumbnail(self):
-        cache_key = f"map_{self.image.name}_thumb"
+        cache_key = f"map:thumbnail:{self.image.name}"
         cached_thumb = cache.get(cache_key)
         if cached_thumb:
             return cached_thumb
@@ -296,7 +296,7 @@ class RasterMap(models.Model):
 
     @property
     def og_thumbnail(self):
-        cache_key = f"map_{self.image.name}_og_thumb"
+        cache_key = f"map:og-thumbnail:{self.image.name}"
         cached_thumb = cache.get(cache_key)
         if cached_thumb:
             return cached_thumb

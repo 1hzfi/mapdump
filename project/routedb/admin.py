@@ -47,11 +47,11 @@ class RouteAdmin(admin.ModelAdmin):
     @admin.action(description="Clear images cache")
     def clear_images(self, request, qs):
         for r in qs:
-            cache.delete(f"route_{r.images_path}_h")
-            cache.delete(f"route_{r.images_path}_r")
-            cache.delete(f"route_{r.images_path}_h_r")
-            cache.delete(f"route_{r.images_path}")
-            cache.delete(f"map_{r.raster_map.image.name}_thumb")
+            cache.delete(f"route:{r.images_path}:1:0")
+            cache.delete(f"route:{r.images_path}:1:1")
+            cache.delete(f"route:{r.images_path}:0:1")
+            cache.delete(f"route:{r.images_path}:0:0")
+            cache.delete(f"map:thumbnail:{r.raster_map.image.name}")
         updated = qs.count()
 
         self.message_user(

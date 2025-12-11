@@ -307,10 +307,10 @@ class RouteDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def update(self, request, *args, **kwargs):
         obj = self.get_object()
-        cache.delete(f"route_{obj.images_path}_h")
-        cache.delete(f"route_{obj.images_path}_r")
-        cache.delete(f"route_{obj.images_path}_h_r")
-        cache.delete(f"route_{obj.images_path}")
+        cache.delete(f"route:{obj.images_path}:0:0")
+        cache.delete(f"route:{obj.images_path}:0:1")
+        cache.delete(f"route:{obj.images_path}:1:1")
+        cache.delete(f"route:{obj.images_path}:1:0")
         return super().update(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
