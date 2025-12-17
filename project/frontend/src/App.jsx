@@ -4,7 +4,6 @@ import Login from "./components/Login";
 import RasterMapRedirect from "./components/RasterMapRedirect";
 import LoginPage from "./components/LoginPage";
 import LoginAsPage from "./components/LoginAsPage";
-import UserView from "./components/UserView";
 import NotFound from "./components/NotFound";
 import TOS from "./components/TOS";
 import PrivacyPolicy from "./components/PrivacyPolicy";
