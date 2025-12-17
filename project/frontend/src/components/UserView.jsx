@@ -274,7 +274,7 @@ const UserView = ({ match, history }) => {
                 if (!value?.count) {
                   return "color-empty";
                 }
-                return "color-github-1";
+                return "color-rasti-1";
               }}
               tooltipDataAttrs={(value) => {
                 return {
