@@ -120,7 +120,7 @@ body {
   font-family: "TwemojiCountryFlags", var(--font-family-sans-serif);
 }
 
-.react-calendar-heatmap .color-scale-1 { fill: #ff7b33; }
-.react-calendar-heatmap .color-scale-2 { fill: #ff7b33; }
-.react-calendar-heatmap .color-scale-3 { fill: #ff7b33; }
-.react-calendar-heatmap .color-scale-4 { fill: #ff7b33; }
+.react-calendar-heatmap .color-github-1 { fill: #ff7b33; }
+.react-calendar-heatmap .color-github-2 { fill: #ff7b33; }
+.react-calendar-heatmap .color-github-3 { fill: #ff7b33; }
+.react-calendar-heatmap .color-github-4 { fill: #ff7b33; }
