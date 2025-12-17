@@ -32,7 +32,7 @@ const LazyUserView = React.lazy(() => import('./components/UserView'));
 function UserView() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <LazyUserView />
+      <LazyUserView {...props} />
     </Suspense>
   );
 }
