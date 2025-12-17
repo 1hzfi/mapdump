@@ -21,9 +21,6 @@ import { GlobalStateProvider } from "./utils/useGlobalState";
 window.drawmyroute = {};
 
 const LazyHome = React.lazy(() => import('./components/Home'));
-const LazyRasterMap = React.lazy(() => import('./components/RasterMap'));
-const LazyNewMap = React.lazy(() => import('./components/NewMap'));
-
 function Home() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
@@ -31,6 +28,17 @@ function Home() {
     </Suspense>
   );
 }
+
+const LazyUserView = React.lazy(() => import('./components/UserView'));
+function UserView() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LazyUserView />
+    </Suspense>
+  );
+}
+
+const LazyRasterMap = React.lazy(() => import('./components/RasterMap'));
 function RasterMap() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
@@ -38,6 +46,8 @@ function RasterMap() {
     </Suspense>
   );
 }
+
+const LazyNewMap = React.lazy(() => import('./components/NewMap'));
 function NewMap() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
