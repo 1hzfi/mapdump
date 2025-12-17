@@ -29,7 +29,7 @@ function Home() {
 }
 
 const LazyUserView = React.lazy(() => import('./components/UserView'));
-function UserView() {
+function UserView(props) {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <LazyUserView {...props} />
