@@ -1,13 +1,10 @@
-import React from "react";
+import React , { Suspense } from "react";
 import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
 import Login from "./components/Login";
-import Home from "./components/Home";
-import RasterMap from "./components/RasterMap";
 import RasterMapRedirect from "./components/RasterMapRedirect";
 import LoginPage from "./components/LoginPage";
 import LoginAsPage from "./components/LoginAsPage";
 import UserView from "./components/UserView";
-import NewMap from "./components/NewMap";
 import NotFound from "./components/NotFound";
 import TOS from "./components/TOS";
 import PrivacyPolicy from "./components/PrivacyPolicy";
@@ -22,6 +19,32 @@ import UserDeletionConfirmation from "./components/UserDeletionConfirmation";
 import { GlobalStateProvider } from "./utils/useGlobalState";
 
 window.drawmyroute = {};
+
+const LazyHome = React.lazy(() => import('./components/Home'));
+const LazyRasterMap = React.lazy(() => import('./components/RasterMap'));
+const LazyNewMap = React.lazy(() => import('./components/NewMap'));
+
+function Home() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LazyHome />
+    </Suspense>
+  );
+}
+function RasterMap() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LazyRasterMap />
+    </Suspense>
+  );
+}
+function NewMap() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LazyNewMap />
+    </Suspense>
+  );
+}
 
 function App() {
   const onClickHome = (e) => {
