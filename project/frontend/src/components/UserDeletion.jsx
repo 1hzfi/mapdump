@@ -39,7 +39,6 @@ const UserDeletion = () => {
       <h3>
         <i className="fa fa-trash"></i> Account Deletion
       </h3>
-      <hr />
       <div className="row" style={{ marginBottom: "1em" }}>
         <div className="col-sm">
           <button type="button" onClick={onDelete} className="btn btn-danger">

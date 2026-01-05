@@ -83,19 +83,15 @@ const Home = ({ history }) => {
         )}
         {!username && (
           <div
-            className="col-12"
+            className="col-12 text-center"
             style={{ marginBottom: "15px" }}
           >
-            <div
-              style={{
+            <div style={{
                 whiteSpace: "nowrap", 
                 textAlign: "center",
-                fontSize: "5vw",
+                fontSize: "1.7em",
                 fontWeight: "bold",
-              }}
-            >
-              You are not logged in...
-              <br />
+              }}>
               <Link to={"/sign-up"}>
                 <button type="button" className="btn btn-primary btn-success">Sign Up</button>
               </Link>

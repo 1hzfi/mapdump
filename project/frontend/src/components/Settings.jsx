@@ -4,6 +4,7 @@ import UserSettings from "./UserSettings";
 import Avatar from "./Avatar";
 import EmailsList from "./EmailsList";
 import UserDeletion from "./UserDeletion";
+import LogOut from "./LogOut";
 import useGlobalState from "../utils/useGlobalState";
 import { Helmet } from "react-helmet";
 import DownloadOwnDataBtn from "./DownloadOwnDataBtn";
@@ -36,6 +37,8 @@ const Settings = ({ history }) => {
       <EmailsList />
       <hr />
       <DownloadOwnDataBtn />
+      <hr />
+      <LogOut />
       <hr />
       <UserDeletion />
     </div>
