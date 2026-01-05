@@ -206,7 +206,7 @@ const UserView = ({ match, history }) => {
                 " | Mapdump.com"}
             </title>
           </Helmet>
-          <div style={{ display: "flex", justifyContent: "flex-start" }}>
+          <div className="mb-5" style={{ display: "flex", justifyContent: "flex-start" }}>
             <div style={{ marginRight: "15px" }}>
               <img
                 src={`${import.meta.env.VITE_AVATAR_ROOT}/athletes/${data.username}.png`}
@@ -224,17 +224,7 @@ const UserView = ({ match, history }) => {
                       " " +
                       capitalizeFirstLetter(data.last_name)
                     : data.username}
-                </Link>{" "}
-                <a
-                  href={
-                    import.meta.env.VITE_API_URL +
-                    "/v1/user/" +
-                    match.params.username +
-                    "/feed/"
-                  }
-                >
-                  <i className="fa fa-rss" title="RSS"></i>
-                </a>
+                </Link>
               </h2>
               <h5>@{data.username}</h5>
             </div>

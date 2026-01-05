@@ -1,6 +1,5 @@
 import React , { Suspense } from "react";
 import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
-import Login from "./components/Login";
 import RasterMapRedirect from "./components/RasterMapRedirect";
 import LoginPage from "./components/LoginPage";
 import LoginAsPage from "./components/LoginAsPage";
@@ -74,7 +73,7 @@ function App() {
   return (
     <GlobalStateProvider>
       <Router basename="/">
-        <div className="jumbotron text-center">
+        <div className="jumbotron text-end mb-5">
           <div
             style={{
               width: "100%",
@@ -91,35 +90,18 @@ function App() {
             onClick={onClickHome}
             style={{
               textDecoration: "none",
-              color: "#f3f",
-              textShadow:
-                "-1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff",
+              color: "#f3f9",
+              fontWeight: "bold",
             }}
           >
-            <h1 style={{ whiteSpace: "nowrap" }}>
-              <span
-                style={{
-                  display: "inline-block",
-                  backgroundColor: "#f4f4f4",
-                  width: "60px",
-                  borderRadius: "50%",
-                }}
-              >
-                <img
-                  src="/static/logo.svg?v=20231023"
-                  alt="logo"
-                  height="60px"
-                  style={{ padding: "5px" }}
-                />
-              </span>{" "}
-              <small>Mapdump.com</small>
+            <h1 style={{ whiteSpace: "nowrap", fontSize: "9vw", fontWeight: "bold", }}>
+              MAPDUMP
             </h1>
-            <p style={{ padding: "0 0 30px 0", margin: "-10px 0 0 0" }}>
+            <p style={{ whiteSpace: "nowrap", margin: "0 0 0 0", fontSize: "4vw", fontWeight: "bold", }}>
               WHERE YOUR MAPS END THEIR LIFE...
             </p>
           </Link>
         </div>
-        <Login />
         <Route path="/" />
         <Switch>
           <Route exact path="/" component={Home} />

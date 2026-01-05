@@ -40,7 +40,7 @@ const LoginPage = (props) => {
       <Helmet>
         <title>Login | Mapdump.com</title>
       </Helmet>
-      <>
+      <div class="col-8 offset-2">
         <h1>
           <i className="fas fa-sign-in-alt"></i> Login
         </h1>
@@ -92,14 +92,14 @@ const LoginPage = (props) => {
             <i className="fas fa-sign-in-alt"></i> Login
           </button>
         </form>
-      </>
-      <div style={{ display: "block", justifyContent: "initial" }}>
-        <div className="float-right">
-          <p>
-            Not a member? <Link to="/sign-up">Sign Up</Link>
-            <br />
-            <Link to="/password-reset">Forgot Password?</Link>
-          </p>
+        <div style={{ display: "block", justifyContent: "initial" }}>
+          <div className="text-center">
+            <p>
+              Not a member? <Link to="/sign-up">Sign Up</Link>
+              <br />
+              <Link to="/password-reset">Forgot Password?</Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>

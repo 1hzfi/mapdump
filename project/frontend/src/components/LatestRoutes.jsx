@@ -79,11 +79,6 @@ const LatestRoute = (props) => {
         {props?.tag
           ? 'Routes tagged "' + props.tag + '"'
           : "Latest Routes on Mapdump.com "}
-        {!props?.tag && (
-          <a href={import.meta.env.VITE_API_URL + "/v1/latest-routes/feed/"}>
-            <i className="fa fa-rss" title="RSS"></i>
-          </a>
-        )}
       </h3>
       <div className="container" style={{ textAlign: "left" }}>
         {routes === false && (

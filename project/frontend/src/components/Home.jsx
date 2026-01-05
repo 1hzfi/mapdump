@@ -36,7 +36,7 @@ const Home = ({ history }) => {
   return (
     <>
       <Helmet>
-        <title>Mapdump.com</title>
+        <title>MAPDUMP</title>
       </Helmet>
       <div className="container" style={{ textAlign: "center" }}>
         {username && userData && (
@@ -72,25 +72,25 @@ const Home = ({ history }) => {
                   : userData.username}
               </Link>
             </div>
-            <hr />
             <div>
+              <Link to="/new">New Map</Link> -{" "}
               <Link to={"/athletes/" + username}>Your Activities</Link> -{" "}
-              <Link to="/new">Upload New Route</Link>
-              <br />
-              <Link to="/map">Browse Maps</Link>
+              <Link to="/settings">Settings</Link>
               <LatestLikes history={history}/>
             </div>
+            <hr />
           </div>
         )}
         {!username && (
           <div
-            className="col-12 col-md-6 offset-md-3"
+            className="col-12"
             style={{ marginBottom: "15px" }}
           >
             <div
               style={{
+                whiteSpace: "nowrap", 
                 textAlign: "center",
-                fontSize: "1.7em",
+                fontSize: "5vw",
                 fontWeight: "bold",
               }}
             >
