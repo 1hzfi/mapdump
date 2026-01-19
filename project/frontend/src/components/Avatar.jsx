@@ -8,7 +8,6 @@ import defaultAvatar from "../default-avatar.png";
 const Avatar = () => {
   const globalState = useUser();
   const { username: _username, api_token } = globalState.user;
-  const userData
 
   const [changed, setChanged] = React.useState();
   const [avatar, setAvatar] = React.useState();
