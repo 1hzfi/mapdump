@@ -25,12 +25,14 @@ const Home = ({ history }) => {
             },
           }
         );
-        const data = await res.json();
-        setUserData(data);
+        if (res.ok) {
+          const data = await res.json();
+          setUserData(data);
+          return
+        }
       })();
-    } else {
-      setUserData(null);
-    }
+    };
+    setUserData(null);
   }, [api_token]);
 
   return (
