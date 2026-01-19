@@ -255,6 +255,8 @@ class RouteSerializer(serializers.ModelSerializer):
             raster_map.bounds = validated_data["raster_map"]["bounds"]
             raster_map.prefetch_map_extras()
             raster_map.save()
+        
+        return instance
 
     def create(self, validated_data):
         user = None
