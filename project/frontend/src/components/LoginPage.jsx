@@ -40,7 +40,7 @@ const LoginPage = (props) => {
       <Helmet>
         <title>Login | Mapdump.com</title>
       </Helmet>
-      <div class="col-8 offset-2">
+      <div className="col-8 offset-2">
         <h1>
           <i className="fas fa-sign-in-alt"></i> Login
         </h1>

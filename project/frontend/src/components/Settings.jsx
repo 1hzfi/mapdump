@@ -21,7 +21,7 @@ const Settings = ({ history }) => {
 
   return (
     <div className="container main-container">
-      <Helmet>
+      <Helmet>zzzz
         <title>User Settings | Mapdump.com</title>
       </Helmet>
       <h1>

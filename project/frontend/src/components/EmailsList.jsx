@@ -181,7 +181,7 @@ const EmailsList = () => {
       </h3>
       <hr />
       <div>
-        {emails.map((e) => (
+        {emails?.map((e) => (
           <EmailItem
             key={e.email}
             email={e.email}
