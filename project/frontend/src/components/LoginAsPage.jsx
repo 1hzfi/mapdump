@@ -20,7 +20,7 @@ const LoginAsPage = (props) => {
             },
           }
         );
-        if (res.status === 200) {
+        if (res.ok) {
           const json = await res.json();
           globalState.setUser({ username: json.username, api_token });
         } else {

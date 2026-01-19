@@ -5,35 +5,13 @@ import { Helmet } from "react-helmet";
 
 import { Link } from "react-router-dom";
 import useGlobalState from "../utils/useGlobalState";
+import useUser from "../utils/useUser";
 import { capitalizeFirstLetter } from "../utils";
 
 const Home = ({ history }) => {
-  const [userData, setUserData] = React.useState(null);
   const globalState = useGlobalState();
-  const { api_token, username } = globalState.user;
-
-  React.useEffect(() => {
-    if (api_token) {
-      (async () => {
-        const res = await fetch(
-          import.meta.env.VITE_API_URL + "/v1/auth/user/",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: "Token " + api_token,
-            },
-          }
-        );
-        if (res.ok) {
-          const data = await res.json();
-          setUserData(data);
-          return
-        }
-      })();
-    };
-    setUserData(null);
-  }, [api_token]);
+  const userData = useUser();
+  const { username } = globalState.user;
 
   return (
     <>

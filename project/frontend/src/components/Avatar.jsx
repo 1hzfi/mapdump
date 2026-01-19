@@ -1,13 +1,14 @@
 import React from "react";
 import AvatarUploader from "react-avatar-uploader";
 import Swal from "sweetalert2";
-import useGlobalState from "../utils/useGlobalState";
+import useUser from "../utils/useUser";
 
 import defaultAvatar from "../default-avatar.png";
 
 const Avatar = () => {
-  const globalState = useGlobalState();
+  const globalState = useUser();
   const { username: _username, api_token } = globalState.user;
+  const userData
 
   const [changed, setChanged] = React.useState();
   const [avatar, setAvatar] = React.useState();
