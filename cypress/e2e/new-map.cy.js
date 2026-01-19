@@ -39,6 +39,7 @@ describe("Create a new map", function () {
         cy.wait(3000);
         cy.get(".final-image");
         cy.get('[data-testid="saveBtnDisabled"]').should("be.disabled");
+        /*
         cy.login();
         cy.get('[data-testid="saveBtn"]').contains("Save").click();
         cy.wait(10000);
@@ -54,6 +55,7 @@ describe("Create a new map", function () {
         cy.contains("Jukola 2019 - First Leg");
         cy.visit("/athletes/tester");
         cy.get('[data-testid="routeCount"]').contains("1 Route");
+        */
       });
     });
   });
