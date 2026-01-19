@@ -23,6 +23,8 @@ const useUser = () => {
                 if (res.ok) {
                     const data = await res.json();
                     setUserData(data);
+                } else {
+                    globalState.setUser({});
                 }
             })();
         };
