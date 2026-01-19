@@ -25,7 +25,7 @@ const useUser = () => {
                 setUserData(data);
                 return
             } else {
-                globalState.setUser(null);
+                globalState.setUser({});
             }
         })();
     };

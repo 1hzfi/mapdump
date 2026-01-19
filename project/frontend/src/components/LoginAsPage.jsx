@@ -24,7 +24,7 @@ const LoginAsPage = (props) => {
           const json = await res.json();
           globalState.setUser({ username: json.username, api_token });
         } else {
-          globalState.setUser(null);
+          globalState.setUser({});
         }
         props.history.push("/");
       }
