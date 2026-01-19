@@ -217,7 +217,8 @@ class RouteSerializer(serializers.ModelSerializer):
     def validate(self, data):
         request = self.context.get("request")
         if request and request.method in ("PUT", "PATCH"):
-            pass
+            if data.get("raster_map"):
+                pass
         else:  # Method is POST
             if data.get("start_time"):
                 if data.get("route_data", {}).get("time", [None])[0]:
@@ -242,6 +243,18 @@ class RouteSerializer(serializers.ModelSerializer):
                     "You must define map_bounds fields along with map_image"
                 )
         return data
+
+    def update(self, instance, validated_data):
+        user = None
+        request = self.context.get("request")
+        if request and hasattr(request, "user"):
+            user = request.user
+
+        if validated_data.get("raster_map", {}).get("bounds"):
+            raster_map = instance.raster_map
+            raster_map.bounds = validated_data["raster_map"]["bounds"]
+            raster_map.prefetch_map_extras()
+            raster_map.save()
 
     def create(self, validated_data):
         user = None

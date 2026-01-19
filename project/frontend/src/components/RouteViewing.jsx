@@ -577,6 +577,7 @@ const RouteViewing = (props) => {
                   >
                     <i className="fas fa-cut"></i> Crop GPS
                   </button>
+                  &nbsp;
                   <button
                     type="button"
                     style={{ marginBottom: "5px" }}
