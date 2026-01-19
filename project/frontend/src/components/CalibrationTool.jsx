@@ -301,7 +301,6 @@ function getBaseLayers() {
 
 const CalibrationTool = (props) => {
   const { onValue, route, mapDataURL } = props;
-
   const [mapWorld, setMapWorld] = useState();
   const [mapRaster, setMapRaster] = useState();
   const [markersWorld, setMarkersWorld] = useState([]);

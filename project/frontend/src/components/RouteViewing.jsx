@@ -3,6 +3,7 @@ import { getCorners } from "../utils/drawHelpers";
 import { saveAs } from "file-saver";
 import RouteHeader from "./RouteHeader";
 import ShareModal from "./ShareModal";
+import CornerCoordsInput from "./CornerCoordsInput";
 import CommentsModal from "./CommentsModal";
 import { saveKMZ } from "../utils/fileHelpers";
 import useGlobalState from "../utils/useGlobalState";
@@ -52,6 +53,7 @@ const RouteViewing = (props) => {
   const [imgURL, setImgURL] = useState(null);
   const [imgLoaded, setImgLoaded] = useState(false);
   const [cropping, setCropping] = useState(false);
+  const [reCalibrating, setReCalibrating] = useState(false);
   const [leafletRoute, setLeafletRoute] = useState(null);
   const [croppingRange, setCroppingRange] = useState([0, 100]);
   const [savingCrop, setSavingCrop] = useState(false);
@@ -281,6 +283,10 @@ const RouteViewing = (props) => {
     }
   };
 
+  const reCalibrate = () => {
+    setReCalibrating(true);
+  }
+
   const cropRoute = () => {
     setImgLoaded(false);
     setMapImage(false);
@@ -446,6 +452,42 @@ const RouteViewing = (props) => {
     } catch (e) {}
   };
 
+  const patchCalibration = async (val) => {
+    const cc = val.split(",").map(f => parseFloat(f));
+    try {
+      const response = await fetch(
+        import.meta.env.VITE_API_URL + "/v1/route/" + props.id,
+        {
+          method: "PATCH",
+          credentials: "omit",
+          headers: {
+            Authorization: "Token " + api_token,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            map_bounds: {
+              top_left: [cc[0], cc[1]],
+              top_right: [cc[2], cc[3]],
+              bottom_right: [cc[4], cc[5]],
+              bottom_left: [cc[6], cc[7]],
+            }
+          })
+        }
+      );
+      setReCalibrating(false);
+      if (response.status !== 200) {
+        Swal.fire({
+          title: "Error!",
+          text: "Something went wrong!",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+        return;
+      }
+      window.location.reload();
+  } catch (e) {}
+}
+
   const mapRef = useCallback((node) => {
     if (node !== null) {
       const newMap = L.map(node, {
@@ -482,7 +524,7 @@ const RouteViewing = (props) => {
         {canLike && (<> <button type="button" className="btn btn-primary" onClick={grantMedal}>Give a clap <i className="fa fa-hands-clapping" /></button></>)}
         <> <button type="button" className="btn btn-primary font-weight-bold font-italic" onClick={openComments}>{comments.length} <i className="fa fa-comment"></i></button></>
         </div>
-        {!cropping && (
+        {!(cropping || reCalibrating) && (
           <>
             <div>
               {!isPrivate && (
@@ -534,6 +576,14 @@ const RouteViewing = (props) => {
                     onClick={cropRoute}
                   >
                     <i className="fas fa-cut"></i> Crop GPS
+                  </button>
+                  <button
+                    type="button"
+                    style={{ marginBottom: "5px" }}
+                    className="btn btn-sm btn-primary"
+                    onClick={reCalibrate}
+                  >
+                    <i className="fas fa-cut"></i> Re-Calibrate Map
                   </button>
                 </>
               )}
@@ -605,7 +655,14 @@ const RouteViewing = (props) => {
               />
             </div>
           )}
-          {imgLoaded && (
+          {reCalibrating && imgLoaded && (
+            <div className="container">
+               <center><h1>Re-Calibrate</h1>
+               <CornerCoordsInput mapDataURL={mapImage.imgURL} onUndo={() => setReCalibrating(false)} coordsCallback={(val) => patchCalibration(val)} route={route.map((pt) => ({time: pt.timestamp, latlng: [pt.coords.latitude, pt.coords.longitude]}))}></CornerCoordsInput>
+               </center>
+            </div>
+          )}
+          {!reCalibrating && imgLoaded && (
             <center>
               <div
                 ref={mapRef}
