@@ -130,19 +130,10 @@ const LatestRoute = (props) => {
                             alt="profile"
                             style={{ borderRadius: "50%", width: "40px" }}
                           ></img>
-                          <br />
-                          <span
-                            title={regionNames.of(r.country)}
-                            className="countryFlags"
-                            style={{ fontSize: "1.5em", margin: "5px" }}
-                          >
-                            {getFlagEmoji(r.country)}
-                          </span>
                         </div>
                         <div
                           style={{
                             width: "calc(100% - 46px)",
-                            borderLeft: "1px solid #B4B4B4",
                           }}
                         >
                           <div className="card-text">
@@ -175,40 +166,71 @@ const LatestRoute = (props) => {
                                   })
                                 )}
                               </div>
-                              <div
+                            </div>
+                          </div>
+                        </div>
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "start",
+                          }}
+                        >
+                          <div
+                            style={{
+                                gap: "5px",
+                                flexFlow: "row wrap",
+                                color: "black",
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                            }}
+                          >
+                            <b>
+                              <Link
                                 style={{
                                   color: "black",
                                   whiteSpace: "nowrap",
                                   overflow: "hidden",
                                   textOverflow: "ellipsis",
                                 }}
+                                to={"/routes/" + r.id}
+                                className={"stretched-link"}
                               >
-                                <b>
-                                  <Link
-                                    style={{
-                                      color: "black",
-                                      whiteSpace: "nowrap",
-                                      overflow: "hidden",
-                                      textOverflow: "ellipsis",
-                                    }}
-                                    to={"/routes/" + r.id}
-                                    className={"stretched-link"}
-                                  >
-                                    {r.name}
-                                  </Link>
-                                </b>
-                              </div>
+                                <span
+                                  title={regionNames.of(r.country)}
+                                  className="countryFlags"
+                                  style={{ fontSize: "1.2em" }}
+                                >
+                                  {getFlagEmoji(r.country)}{" "}
+                                </span>{r.name}
+                              </Link>
+                            </b>
+                          </div>
+                        </div>
+                        <div style={{ marginLeft: "-1px" }}>
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "start",
+                              gap: "5px",
+                              flexFlow: "row wrap",
+                              fontSize: "0.8em",
+                            }}
+                          >
+                            <div
+                              style={{
+                                paddingLeft: "5px",
+                              }}
+                            >
+                              <span style={{ color: "#666" }}>
+                                Distance
+                              </span>
+                              <br />
+                              {(r.distance / 1000).toFixed(1) + "km"}
                             </div>
-                            <div style={{ marginLeft: "-1px" }}>
-                              <div
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "start",
-                                  gap: "5px",
-                                  flexFlow: "row wrap",
-                                  fontSize: "0.8em",
-                                }}
-                              >
+                            {r.duration ? (
+                              <>
                                 <div
                                   style={{
                                     borderLeft: "1px solid #B4B4B4",
@@ -216,46 +238,29 @@ const LatestRoute = (props) => {
                                   }}
                                 >
                                   <span style={{ color: "#666" }}>
-                                    Distance
+                                    Duration
                                   </span>
                                   <br />
-                                  {(r.distance / 1000).toFixed(1) + "km"}
+                                  {printTime(r.duration * 1000)}
                                 </div>
-                                {r.duration ? (
-                                  <>
-                                    <div
-                                      style={{
-                                        borderLeft: "1px solid #B4B4B4",
-                                        paddingLeft: "5px",
-                                      }}
-                                    >
-                                      <span style={{ color: "#666" }}>
-                                        Duration
-                                      </span>
-                                      <br />
-                                      {printTime(r.duration * 1000)}
-                                    </div>
-                                    <div
-                                      style={{
-                                        borderLeft: "1px solid #B4B4B4",
-                                        paddingLeft: "5px",
-                                      }}
-                                    >
-                                      <span style={{ color: "#666" }}>
-                                        Pace
-                                      </span>
-                                      <br />
-                                      {printPace(
-                                        (r.duration / r.distance) * 1000
-                                      )}
-                                    </div>
-                                  </>
-                                ) : (
-                                  ""
-                                )}
-                              </div>
-                            </div>
-                          </div>
+                                <div
+                                  style={{
+                                    borderLeft: "1px solid #B4B4B4",
+                                    paddingLeft: "5px",
+                                  }}
+                                >
+                                  <span style={{ color: "#666" }}>
+                                    Pace
+                                  </span>
+                                  <br />
+                                  {printPace(
+                                    (r.duration / r.distance) * 1000
+                                  )}
+                                </div>
+                              </>
+                            ) : (
+                              ""
+                            )}
                         </div>
                       </div>
                     </div>
