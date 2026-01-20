@@ -40,10 +40,6 @@ const UserView = ({ match, history }) => {
   const { api_token } = globalState.user;
 
   React.useEffect(() => {
-    ReactTooltip.rebuild();
-  });
-
-  React.useEffect(() => {
     if (urls.includes(match.params.username)) {
       return;
     }
@@ -206,7 +202,7 @@ const UserView = ({ match, history }) => {
                 " | Mapdump.com"}
             </title>
           </Helmet>
-          <div className="mb-5" style={{ display: "flex", justifyContent: "flex-start" }}>
+          <div className="mb-3" style={{ display: "flex", justifyContent: "flex-start" }}>
             <div style={{ marginRight: "15px" }}>
               <img
                 src={`${import.meta.env.VITE_AVATAR_ROOT}/athletes/${data.username}.png`}
@@ -229,6 +225,23 @@ const UserView = ({ match, history }) => {
               <h5>@{data.username}</h5>
             </div>
           </div>
+          <h3 data-testid="routeCount">
+            {routes.length} Route{routes.length === 1 ? "" : "s"}{" "}{match.params.date ? (
+              <>on {DateTime.fromISO(match.params.date, { setZone: false }).toFormat("DDDD")}</>
+            ) : match.params.year && (<>in {match.params.year}</>)}{" "}
+            {getCountryStats()
+            .map((c) => (
+              <span key={c.country} title={regionNames.of(c.country)} style={{fontSize: '0.6em'}}>
+                <b className="countryFlags">{getFlagEmoji(c.country)}</b>{" "}
+                {c.count}
+              </span>
+            ))
+            .reduce((accu, elem, idx) => {
+              return accu === null
+                ? [elem]
+                : [...accu, <span key={`spacer-${idx}`} style={{fontSize: '0.6em'}}> | </span>, elem];
+            }, null)}
+          </h3>
           <div>
             {years.map((y) => (
               <span key={y}>
@@ -243,7 +256,7 @@ const UserView = ({ match, history }) => {
               </span>
             ))}
           </div>
-          <>
+          <div>
             <CalendarHeatmap
               startDate={
                 selectedYear
@@ -287,35 +300,7 @@ const UserView = ({ match, history }) => {
               }}
             ></CalendarHeatmap>
             <ReactTooltip />
-          </>
-          {match.params.date ? (
-            <h3>
-              Routes on{" "}
-              {DateTime.fromISO(match.params.date, { setZone: false }).toFormat(
-                "DDDD"
-              )}
-            </h3>
-          ) : match.params.year ? (
-            <h3>Routes in {match.params.year}</h3>
-          ) : (
-            <h3>All Routes</h3>
-          )}
-          {getCountryStats()
-            .map((c) => (
-              <span key={c.country} title={regionNames.of(c.country)}>
-                <b className="countryFlags">{getFlagEmoji(c.country)}</b>{" "}
-                {c.count}
-              </span>
-            ))
-            .reduce((accu, elem, idx) => {
-              return accu === null
-                ? [elem]
-                : [...accu, <span key={`spacer-${idx}`}> | </span>, elem];
-            }, null)}
-          <hr />
-          <h3 data-testid="routeCount">
-            {routes.length} Route{routes.length === 1 ? "" : "s"}
-          </h3>
+          </div>
           <div className="container">
             <div className="row">
               {routes.map((r) => (
