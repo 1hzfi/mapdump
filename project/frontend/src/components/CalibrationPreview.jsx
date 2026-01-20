@@ -315,8 +315,7 @@ const CalibrationPreview = (props) => {
               onClick={() => onValue(getCalibrationString(cornersCoordinates))}
               data-testid="validate-button"
             >
-              <i className="fas fa-arrow-alt-circle-right"></i> Validate
-              Calibration
+              <i className="fas fa-arrow-alt-circle-right"></i> Submit Calibration
             </button>
           </div>
         </div>

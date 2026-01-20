@@ -584,7 +584,7 @@ const RouteViewing = (props) => {
                     className="btn btn-sm btn-primary"
                     onClick={reCalibrate}
                   >
-                    <i className="fas fa-cut"></i> Re-Calibrate Map
+                    <i class="fa-solid fa-compass-drafting"></i> Re-Calibrate Map
                   </button>
                 </>
               )}
@@ -658,9 +658,9 @@ const RouteViewing = (props) => {
           )}
           {reCalibrating && imgLoaded && (
             <div className="container">
-               <center><h1>Re-Calibrate</h1>
-               <CornerCoordsInput mapDataURL={mapImage.imgURL} onUndo={() => setReCalibrating(false)} coordsCallback={(val) => patchCalibration(val)} route={route.map((pt) => ({time: pt.timestamp, latlng: [pt.coords.latitude, pt.coords.longitude]}))}></CornerCoordsInput>
-               </center>
+               <div><h1>Re-Calibrate</h1>
+               <CornerCoordsInput mapDataURL={props.mapDataURL + (props.isPrivate ? "?auth_token=" + api_token : "")} onUndo={() => setReCalibrating(false)} coordsCallback={(val) => patchCalibration(val)} route={route.map((pt) => ({time: pt.timestamp, latlng: [pt.coords.latitude, pt.coords.longitude]}))}></CornerCoordsInput>
+               </div>
             </div>
           )}
           {!reCalibrating && imgLoaded && (

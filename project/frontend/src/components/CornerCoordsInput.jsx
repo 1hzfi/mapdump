@@ -6,7 +6,7 @@ import CalibrationTool from "./CalibrationTool";
 const CornersCoordsInput = (props) => {
   const [coords, setCoords] = useState();
   const [isValidCoords, setIsValidCoords] = useState(false);
-  const [calibrationToolOpen, setCalibrationToolOpen] = useState(false);
+  const [calibrationToolOpen, setCalibrationToolOpen] = useState(true);
   const [submited, setSubmited] = useState(false);
   const inputEl = useRef(null);
 
@@ -31,17 +31,32 @@ const CornersCoordsInput = (props) => {
     }
   };
   return calibrationToolOpen ? (
+    <>
     <CalibrationTool
       onValue={(v) => {
-        setCalibrationToolOpen(false);
         updateCoords(v ? v : "");
         if (v) {
           props.coordsCallback && props.coordsCallback(v);
+        } else {
+          props.onUndo()
         }
       }}
       route={props.route}
       mapDataURL={props.mapDataURL}
     ></CalibrationTool>
+    <div className="mt-3">
+      <Link
+        to="/"
+        onClick={(e) => {
+          e.preventDefault();
+          setCalibrationToolOpen(false);
+        }}
+        data-testid="to-input-tool-link"
+      >
+        Enter coordinates manually
+      </Link>
+    </div>
+    </>
   ) : (
     <div>
       <div className="form-group">
@@ -87,7 +102,7 @@ const CornersCoordsInput = (props) => {
         className="btn btn-primary"
         onClick={() => onSubmit()}
       >
-        <i className="fas fa-arrow-alt-circle-right"></i> Next
+        <i className="fas fa-arrow-alt-circle-right"></i> Submit calibration
       </button>
     </div>
   );
