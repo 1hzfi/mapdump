@@ -35,7 +35,7 @@ const UserView = ({ match, history }) => {
   const [calendarVal, setCalendarVal] = React.useState([]);
   const [years, setYears] = React.useState([]);
   const [selectedYear, setSelectedYear] = React.useState(false);
-
+  const [tooltip, showTooltip] = React.useState(false);
   const globalState = useGlobalState();
   const { api_token } = globalState.user;
 
@@ -256,7 +256,12 @@ const UserView = ({ match, history }) => {
               </span>
             ))}
           </div>
-          <div>
+          <div
+              onMouseEnter={() => showTooltip(true)}
+              onMouseLeave={() => {
+                showTooltip(false);
+                setTimeout(() => showTooltip(true), 50);
+              }}>
             <CalendarHeatmap
               startDate={
                 selectedYear
@@ -299,7 +304,7 @@ const UserView = ({ match, history }) => {
                 }
               }}
             ></CalendarHeatmap>
-            <ReactTooltip />
+            {tooltip && <ReactTooltip effect="solid" />}
           </div>
           <div className="container">
             <div className="row">
