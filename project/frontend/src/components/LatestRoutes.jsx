@@ -116,11 +116,14 @@ const LatestRoute = (props) => {
                       ></LazyImage>
                     </Link>
                     <div className="card-body">
-                      <div style={{ display: "flex", justifyContent: "start" }}>
+                        <div style={{ display: "flex", justifyContent: "start", paddingBottom: "3px" }}>
                         <div
-                          style={{ marginRight: "10px", textAlign: "center" }}
+                          style={{ marginRight: "2px", textAlign: "center" }}
                         >
-                          <img
+                          <Link
+                                  style={{ zIndex: 2, position: "relative"}}
+                                  to={"/athletes/" + r.athlete.username}
+                                ><img
                             src={
                               import.meta.env.VITE_AVATAR_ROOT +
                               "/athletes/" +
@@ -128,12 +131,13 @@ const LatestRoute = (props) => {
                               ".png"
                             }
                             alt="profile"
-                            style={{ borderRadius: "50%", width: "40px" }}
-                          ></img>
+                            style={{ borderRadius: "50%", width: "25px", border: "1px solid #b6b6b6" }}
+                          ></img></Link>
                         </div>
                         <div
                           style={{
                             width: "calc(100% - 46px)",
+                            
                           }}
                         >
                           <div className="card-text">
@@ -144,27 +148,21 @@ const LatestRoute = (props) => {
                                   whiteSpace: "nowrap",
                                   overflow: "hidden",
                                   textOverflow: "ellipsis",
+                                  paddingTop: "2px"
                                 }}
                               >
                                 <Link
-                                  style={{ zIndex: 2, position: "relative" }}
+                                  style={{ zIndex: 2, position: "relative"}}
                                   to={"/athletes/" + r.athlete.username}
                                 >
-                                  {r.athlete.first_name && r.athlete.last_name
+                                  <small><b>{r.athlete.first_name && r.athlete.last_name
                                     ? capitalizeFirstLetter(
                                         r.athlete.first_name
                                       ) +
                                       " " +
                                       capitalizeFirstLetter(r.athlete.last_name)
-                                    : r.athlete.username}
+                                    : r.athlete.username}</b></small>
                                 </Link>
-                              </div>
-                              <div style={{ fontSize: "0.8em" }}>
-                                {displayDate(
-                                  DateTime.fromISO(r.start_time, {
-                                    zone: r.tz,
-                                  })
-                                )}
                               </div>
                             </div>
                           </div>
@@ -200,15 +198,22 @@ const LatestRoute = (props) => {
                                 <span
                                   title={regionNames.of(r.country)}
                                   className="countryFlags"
-                                  style={{ fontSize: "1.2em" }}
+                                  style={{ fontSize: "1.6em", verticalAlign:"sub" }}
                                 >
                                   {getFlagEmoji(r.country)}{" "}
-                                </span>{r.name}
+                                </span> {r.name}
                               </Link>
                             </b>
                           </div>
                         </div>
-                        <div style={{ marginLeft: "-1px" }}>
+                        <div style={{ fontSize: "0.8em" }}>
+                            {displayDate(
+                              DateTime.fromISO(r.start_time, {
+                                zone: r.tz,
+                              })
+                            )}
+                        </div>
+                        <div>
                           <div
                             style={{
                               display: "flex",
@@ -218,11 +223,7 @@ const LatestRoute = (props) => {
                               fontSize: "0.8em",
                             }}
                           >
-                            <div
-                              style={{
-                                paddingLeft: "5px",
-                              }}
-                            >
+                            <div>
                               <span style={{ color: "#666" }}>
                                 Distance
                               </span>

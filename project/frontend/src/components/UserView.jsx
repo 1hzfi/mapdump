@@ -207,7 +207,7 @@ const UserView = ({ match, history }) => {
               <img
                 src={`${import.meta.env.VITE_AVATAR_ROOT}/athletes/${data.username}.png`}
                 alt="avatar"
-                style={{ borderRadius: "50%" }}
+                style={{ borderRadius: "50%", border: "1px solid #b6b6b6" }}
                 height="75px"
                 width="75px"
               ></img>
@@ -363,7 +363,14 @@ const UserView = ({ match, history }) => {
                             </b>
                           </div>
                         </div>
-                        <div style={{ marginLeft: "-1px" }}>
+                        <div style={{ fontSize: "0.8em" }}>
+                            {displayDate(
+                              DateTime.fromISO(r.start_time, {
+                                zone: r.tz,
+                              })
+                            )}
+                        </div>
+                        <div>
                           <div
                             style={{
                               display: "flex",
@@ -373,11 +380,7 @@ const UserView = ({ match, history }) => {
                               fontSize: "0.8em",
                             }}
                           >
-                            <div
-                              style={{
-                                paddingLeft: "5px",
-                              }}
-                            >
+                            <div>
                               <span style={{ color: "#666" }}>
                                 Distance
                               </span>

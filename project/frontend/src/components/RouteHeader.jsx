@@ -319,34 +319,34 @@ const RouteHeader = (props) => {
                 ".png"
               }
               alt="profile"
-              style={{ borderRadius: "50%", width: "80px" }}
+              style={{ borderRadius: "50%", width: "40px", border: "1px solid #b6b6b6" }}
             ></img>
-            <br />
-            <span
-              title={regionNames.of(props.country)}
-              className={"fa-2x countryFlags"}
-              style={{ marginTop: "15px" }}
-            >
-              {getFlagEmoji(props.country)}
-            </span>
           </div>
-          <div style={{ borderLeft: "1px solid #B4B4B4", width: "100%" }}>
+          <h2>
+            <div style={{ paddingTop: "5px", fontSize: "25px" }}>
+              <Link to={"/athletes/" + props.athlete.username}>
+                {props.athlete.first_name && props.athlete.last_name
+                  ? capitalizeFirstLetter(props.athlete.first_name) +
+                    " " +
+                    capitalizeFirstLetter(props.athlete.last_name)
+                  : props.athlete.username}
+              </Link>
+            </div>
+          </h2>
+        </div>
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div>
+          <div style={{ width: "100%" }}>
             <h2>
-              <div style={{ paddingLeft: "5px" }}>
-                <Link to={"/athletes/" + props.athlete.username}>
-                  {props.athlete.first_name && props.athlete.last_name
-                    ? capitalizeFirstLetter(props.athlete.first_name) +
-                      " " +
-                      capitalizeFirstLetter(props.athlete.last_name)
-                    : props.athlete.username}
-                </Link>
-                <div style={{ marginTop: "-10px" }}>
-                  <small style={{ fontSize: "0.5em" }}>
-                    {displayDate(
-                      DateTime.fromISO(props.startTime, { zone: props.tz })
-                    )}
-                  </small>
-                </div>
+              <div>
+                <span
+                  title={regionNames.of(props.country)}
+                  className={"countryFlags"}
+                  style={{ fontSize: "1.2em" }}
+                >
+                  {getFlagEmoji(props.country)}{" "}
+                </span>
                 {(!canEdit() || !nameEditing) && <>{name}</>}
                 {canEdit() && nameEditing && (
                   <input
@@ -360,7 +360,14 @@ const RouteHeader = (props) => {
                   />
                 )}
               </div>
-              <div style={{ marginLeft: "-1px" }}>
+              <div style={{ marginTop: "-5px" }}>
+                  <small style={{ fontSize: ".8em" }}>
+                    {displayDate(
+                      DateTime.fromISO(props.startTime, { zone: props.tz })
+                    )}
+                  </small>
+                </div>
+              <div>
                 <div
                   style={{
                     display: "flex",
@@ -370,12 +377,7 @@ const RouteHeader = (props) => {
                     fontSize: "0.8em",
                   }}
                 >
-                  <div
-                    style={{
-                      borderLeft: "1px solid #B4B4B4",
-                      paddingLeft: "5px",
-                    }}
-                  >
+                  <div>
                     <span style={{ color: "#666" }}>Distance</span>
                     <br />
                     {(props.distance / 1000).toFixed(1) + "km"}
@@ -411,7 +413,6 @@ const RouteHeader = (props) => {
                   style={{
                     fontSize: "12px",
                     gap: "5px",
-                    paddingLeft: "5px",
                     paddingTop: "10px",
                   }}
                 >

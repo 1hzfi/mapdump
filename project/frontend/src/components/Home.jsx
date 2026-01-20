@@ -34,7 +34,7 @@ const Home = ({ history }) => {
                     ".png"
                   }
                   alt="profile"
-                  style={{ borderRadius: "50%", width: "80px" }}
+                  style={{ borderRadius: "50%", width: "80px", border: "1px solid #b6b6b6" }}
                 ></img>
               </div>
               <Link
