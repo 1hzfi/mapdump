@@ -131,7 +131,7 @@ describe("Create a new map", function () {
           { subjectType: "drag-n-drop", events: ["dragenter", "drop"] }
         );
         cy.contains("Calibration");
-        cy.get('[data-testid="to-input-link"]').click();
+        cy.get('[data-testid="to-input-tool-link"]').click();
         cy.contains("Corners Coordinates");
         cy.get("#cornersCoordsInput").type(
           "61.45075,24.18994,61.44656,24.24721,61.42094,24.23851,61.42533,24.18156"
