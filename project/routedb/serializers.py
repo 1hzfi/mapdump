@@ -249,14 +249,23 @@ class RouteSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         if request and hasattr(request, "user"):
             user = request.user
+        
+        if instance.athlete != user:
+            raise ValidationError("Not authorized")
 
         if validated_data.get("raster_map", {}).get("bounds"):
             raster_map = instance.raster_map
             raster_map.bounds = validated_data["raster_map"]["bounds"]
             raster_map.prefetch_map_extras()
             raster_map.save()
-        if validated_data["route"]:
+        if validated_data.get("route"):
             instance.route = validated_data["route"]
+        if validated_data.get("name"):
+            instance.name = validated_data["name"]
+        if validated_data.get("comment"):
+            instance.comment = validated_data["comment"]
+        if validated_data.get("is_private"):
+            instance.is_private = validated_data["is_private"]
         return instance
 
     def create(self, validated_data):
