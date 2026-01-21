@@ -465,6 +465,22 @@ const RouteHeader = (props) => {
               <a
                 className={"dropdown-item"}
                 href="/#"
+                onClick={props.cropRoute}
+                data-testid="togglePrivacyBtn"
+              >
+                <i className="fas fa-cut"></i> Crop GPS
+              </a>
+              <a
+                className={"dropdown-item"}
+                href="/#"
+                onClick={props.reCalibrate}
+                data-testid="togglerecalibrate"
+              >
+                <i class="fa-solid fa-compass-drafting"></i> Re-Calibrate Map
+              </a>
+              <a
+                className={"dropdown-item"}
+                href="/#"
                 onClick={togglePrivacy}
                 data-testid="togglePrivacyBtn"
               >

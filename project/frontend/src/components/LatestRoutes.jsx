@@ -155,13 +155,13 @@ const LatestRoute = (props) => {
                                   style={{ zIndex: 2, position: "relative"}}
                                   to={"/athletes/" + r.athlete.username}
                                 >
-                                  <small><b>{r.athlete.first_name && r.athlete.last_name
+                                  {r.athlete.first_name && r.athlete.last_name
                                     ? capitalizeFirstLetter(
                                         r.athlete.first_name
                                       ) +
                                       " " +
                                       capitalizeFirstLetter(r.athlete.last_name)
-                                    : r.athlete.username}</b></small>
+                                    : r.athlete.username}
                                 </Link>
                               </div>
                             </div>

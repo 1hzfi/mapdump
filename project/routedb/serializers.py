@@ -262,7 +262,7 @@ class RouteSerializer(serializers.ModelSerializer):
             instance.route = validated_data["route"]
         if validated_data.get("name"):
             instance.name = validated_data["name"]
-        if validated_data.get("comment"):
+        if validated_data.get("comment") is not None:
             instance.comment = validated_data["comment"]
         if validated_data.get("is_private"):
             instance.is_private = validated_data["is_private"]

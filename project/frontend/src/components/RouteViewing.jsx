@@ -283,11 +283,15 @@ const RouteViewing = (props) => {
     }
   };
 
-  const reCalibrate = () => {
+  const reCalibrate = (e) => {
+    e.preventDefault()
     setReCalibrating(true);
+    setCropping(false);
   }
 
-  const cropRoute = () => {
+  const cropRoute = (e) => {
+    e.preventDefault()
+    setReCalibrating(false);
     setImgLoaded(false);
     setMapImage(false);
     resetOrientation(
@@ -518,6 +522,8 @@ const RouteViewing = (props) => {
           {...props}
           onNameChanged={setName}
           onPrivacyChanged={setIsPrivate}
+          cropRoute={cropRoute}
+          reCalibrate={reCalibrate}
         />
         <div className="mb-3">
         {likes.length !== 0 && (<><span data-tip data-for="likers"><button type="button" className="font-weight-bold font-italic btn-dark btn" onClick={dislike}>{likes.length} <i className="fa fa-hands-clapping" /></button></span><ReactTooltip place="right" id="likers"><div style={{whiteSpace: "pre"}}>{likers}</div></ReactTooltip></>)}
@@ -566,28 +572,6 @@ const RouteViewing = (props) => {
               >
                 <i className="fas fa-download"></i> GPX (Route)
               </button>
-              {canEdit && (
-                <>
-                  &nbsp;
-                  <button
-                    type="button"
-                    style={{ marginBottom: "5px" }}
-                    className="btn btn-sm btn-primary"
-                    onClick={cropRoute}
-                  >
-                    <i className="fas fa-cut"></i> Crop GPS
-                  </button>
-                  &nbsp;
-                  <button
-                    type="button"
-                    style={{ marginBottom: "5px" }}
-                    className="btn btn-sm btn-primary"
-                    onClick={reCalibrate}
-                  >
-                    <i class="fa-solid fa-compass-drafting"></i> Re-Calibrate Map
-                  </button>
-                </>
-              )}
               {hasRouteTime && (
                 <button
                   type="button"
