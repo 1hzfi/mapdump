@@ -81,6 +81,7 @@ var backdropMaps = {
 		attribution:
 			'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
 		className: "wms256",
+    referrerPolicy: "origin",
 	}),
 	"gmap-street": L.tileLayer("https://mt0.google.com/vt/x={x}&y={y}&z={z}", {
 		attribution: "&copy; Google",

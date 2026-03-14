@@ -51,6 +51,7 @@ const BrowseMap = () => {
     const osmLayer = L.TileLayer.Common.extend({
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       options: {
+        referrerPolicy: "origin",
         attribution:
           "\u0026copy\u003B \u003Ca href\u003D\u0022http://openstreetmap.org\u0022\u003EOpenStreetMap\u003C/a\u003E contributors, \u003Ca href\u003D\u0022http://creativecommons.org/licenses/by\u002Dsa/2.0/\u0022\u003ECC\u002DBY\u002DSA\u003C/a\u003E",
       },
