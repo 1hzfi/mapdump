@@ -191,6 +191,7 @@ const LatestRoute = (props) => {
                                   whiteSpace: "nowrap",
                                   overflow: "hidden",
                                   textOverflow: "ellipsis",
+                                  textDecoration: "none",
                                 }}
                                 to={"/routes/" + r.id}
                                 className={"stretched-link"}
