@@ -359,7 +359,7 @@ const UserView = ({ match, history }) => {
                                 >
                                   {getFlagEmoji(r.country)}
                                 </span>
-                                <span className="text-body ms-2">
+                                <span className="text-body ml-2">
                                   {r.name}
                                 </span>
                               </Link>
