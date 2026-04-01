@@ -357,8 +357,11 @@ const UserView = ({ match, history }) => {
                                   className="countryFlags"
                                   style={{ fontSize: "1.2em" }}
                                 >
-                                  {getFlagEmoji(r.country)}{" "}
-                                </span>{r.name}
+                                  {getFlagEmoji(r.country)}
+                                </span>
+                                <span className="text-body ms-2">
+                                  {r.name}
+                                </span>
                               </Link>
                             </b>
                           </div>
