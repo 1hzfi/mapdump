@@ -187,7 +187,7 @@ const LatestRoute = (props) => {
                             <b>
                               <Link
                                 style={{
-                                  color: "black",
+                                  color: "black !important",
                                   whiteSpace: "nowrap",
                                   overflow: "hidden",
                                   textOverflow: "ellipsis",
