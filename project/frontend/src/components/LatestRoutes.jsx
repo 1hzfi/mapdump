@@ -201,7 +201,10 @@ const LatestRoute = (props) => {
                                   style={{ fontSize: "1.6em", verticalAlign:"sub" }}
                                 >
                                   {getFlagEmoji(r.country)}{" "}
-                                </span> {r.name}
+                                </span>
+                                <span className="text-body ml-2">
+                                  {r.name}
+                                </span>
                               </Link>
                             </b>
                           </div>
