@@ -339,15 +339,15 @@ const RouteHeader = (props) => {
         <div>
           <div style={{ width: "100%" }}>
             <h2>
-              <div>
+              <div style={{color: "black !important"}}>
                 <span
                   title={regionNames.of(props.country)}
-                  className={"countryFlags"}
+                  className={"countryFlags mr-2"}
                   style={{ fontSize: "1.2em" }}
                 >
-                  {getFlagEmoji(props.country)}{" "}
+                  {getFlagEmoji(props.country)}
                 </span>
-                {(!canEdit() || !nameEditing) && <>{name}</>}
+                {(!canEdit() || !nameEditing) && <span className="text-body">{name}</span>}
                 {canEdit() && nameEditing && (
                   <input
                     style={{ width: "100%" }}
