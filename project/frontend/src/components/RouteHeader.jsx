@@ -337,9 +337,9 @@ const RouteHeader = (props) => {
       </div>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <div>
-          <div style={{ width: "100%", color: "black !important"}}>
-            <h2 style={{color: "black !important"}}>
-              <div style={{color: "black !important"}}>
+          <div style={{ width: "100%"}}>
+            <h2>
+              <div style={{color: "black"}}>
                 <span
                   title={regionNames.of(props.country)}
                   className={"countryFlags"}
