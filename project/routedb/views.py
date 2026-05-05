@@ -49,8 +49,8 @@ def encode_filename(filename):
 
 
 
-def set_content_disposition(filename, dl=True):
-    prefix = "attachment; " if dl else ""
+def set_content_disposition(filename):
+    prefix = "attachment; "
     return f"{prefix}filename*=UTF-8''{urllib.parse.quote(filename, safe='')}"
 
 
@@ -70,7 +70,7 @@ def serve_from_s3(
     response = HttpResponse("", content_type=mime)
     response["X-Accel-Redirect"] = urllib.parse.quote(f"/s3{url}".encode("utf-8"))
     response["X-Accel-Buffering"] = "no"
-    response["Content-Disposition"] = set_content_disposition(filename, dl=dl)
+    response["Content-Disposition"] = set_content_disposition(filename)
     return response
 
 
