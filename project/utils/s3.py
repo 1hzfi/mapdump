@@ -1,6 +1,7 @@
 import os.path
 
 import boto3
+import botocore
 from django.conf import settings
 
 
