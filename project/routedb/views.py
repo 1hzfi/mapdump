@@ -308,7 +308,7 @@ def raster_map_download(request, uid, *args, **kwargs):
     return serve_from_s3(
         settings.AWS_S3_BUCKET,
         request,
-        "/s3/" + file_path,
+        file_path,
         filename="{}.{}".format(rmap.uid, mime_type[6:]),
         mime=mime_type,
     )
@@ -348,7 +348,7 @@ def map_download(request, uid, *args, **kwargs):
     return serve_from_s3(
         settings.AWS_S3_BUCKET,
         request,
-        "/s3/" + file_path,
+        file_path,
         filename="{}{}".format(basename, mime_type[6:]),
         mime=mime_type,
     )
