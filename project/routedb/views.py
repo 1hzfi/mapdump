@@ -48,34 +48,10 @@ def encode_filename(filename):
     return urllib.parse.quote(filename, safe="")
 
 
-def x_accel_redirect(request, path, filename="", mime="application/force-download"):
-    if settings.DEBUG:
-        import os.path
-        from wsgiref.util import FileWrapper
-
-        path = re.sub(r"^/internal", settings.MEDIA_ROOT, path)
-        if not os.path.exists(path):
-            return HttpResponse(status=status.HTTP_404_NOT_FOUND)
-        wrapper = FileWrapper(open(path, "rb"))
-        response = HttpResponse(wrapper)
-        response["Content-Length"] = os.path.getsize(path)
-    else:
-        response = HttpResponse("", status=status.HTTP_206_PARTIAL_CONTENT)
-        response["X-Accel-Redirect"] = urllib.parse.quote(path.encode("utf-8"))
-        response["X-Accel-Buffering"] = "no"
-        response["Accept-Ranges"] = "bytes"
-    response["Content-Type"] = mime
-    if filename:
-        response["Content-Disposition"] = (
-            f"attachment; filename*=UTF-8''{encode_filename(filename)}"
-        )
-    return response
-
 
 def serve_from_s3(
     bucket, request, path, filename="", mime="application/force-download"
 ):
-    path = re.sub(r"^/internal/", "", path)
     url = s3_object_url(path, bucket)
     url = "/s3{}".format(url[len(settings.AWS_S3_ENDPOINT_URL) :])
 
@@ -332,7 +308,7 @@ def raster_map_download(request, uid, *args, **kwargs):
     return serve_from_s3(
         settings.AWS_S3_BUCKET,
         request,
-        "/internal/" + file_path,
+        "/s3/" + file_path,
         filename="{}.{}".format(rmap.uid, mime_type[6:]),
         mime=mime_type,
     )
@@ -372,7 +348,7 @@ def map_download(request, uid, *args, **kwargs):
     return serve_from_s3(
         settings.AWS_S3_BUCKET,
         request,
-        "/internal/" + file_path,
+        "/s3/" + file_path,
         filename="{}{}".format(basename, mime_type[6:]),
         mime=mime_type,
     )
