@@ -49,27 +49,28 @@ def encode_filename(filename):
 
 
 
+def set_content_disposition(filename, dl=True):
+    prefix = "attachment; " if dl else ""
+    return f"{prefix}filename*=UTF-8''{urllib.parse.quote(filename, safe='')}"
+
+
 def serve_from_s3(
-    bucket, request, path, filename="", mime="application/force-download"
+    bucket,
+    request,
+    path,
+    filename="",
+    mime="application/force-download",
 ):
-    url = s3_object_url(path, bucket)
-    url = "/s3{}".format(url[len(settings.AWS_S3_ENDPOINT_URL) :])
+    if request.method not in ("GET", "HEAD"):
+        raise NotImplementedError()
 
-    response_status = status.HTTP_200_OK
-    if request.method == "GET":
-        response_status = status.HTTP_206_PARTIAL_CONTENT
+    url = s3_object_url(request.method, path, bucket)
+    url = url[len(settings.AWS_S3_ENDPOINT_URL) :]
 
-    response = HttpResponse("", status=response_status)
-
-    if request.method == "GET":
-        response["X-Accel-Redirect"] = urllib.parse.quote(url.encode("utf-8"))
-        response["X-Accel-Buffering"] = "no"
-    response["Accept-Ranges"] = "bytes"
-    response["Content-Type"] = mime
-    if filename:
-        response["Content-Disposition"] = (
-            f"attachment; filename*=UTF-8''{encode_filename(filename)}"
-        )
+    response = HttpResponse("", content_type=mime)
+    response["X-Accel-Redirect"] = urllib.parse.quote(f"/s3{url}".encode("utf-8"))
+    response["X-Accel-Buffering"] = "no"
+    response["Content-Disposition"] = set_content_disposition(filename, dl=dl)
     return response
 
 
