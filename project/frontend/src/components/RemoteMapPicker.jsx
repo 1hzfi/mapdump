@@ -1,8 +1,8 @@
 import React from "react";
 import logo2 from "../gpsseuranta.png";
 
-const INVALID_URL_MSG = "Invalid livelox or gpsseuranta event URL!";
-const ERROR_LOADING_MSG = "Error fetching livelox or gpsseuranta event map!";
+const INVALID_URL_MSG = "Invalid gpsseuranta event URL!";
+const ERROR_LOADING_MSG = "Error fetching gpsseuranta event map!";
 const SERVICES = {
     // "livelox": /^https:\/\/www\.livelox\.com\/Viewer\/.+\?([^&]+&)?classId=(\d+)(&.+)?$/,
     "gpsseuranta": /^https:\/\/([^.]+\.)?tulospalvelu.fi\/(gps\/)?[^/]+\/$/,
