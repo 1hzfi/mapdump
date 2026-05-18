@@ -12,10 +12,15 @@ import RangeSlider from "react-range-slider-input";
 import "react-range-slider-input/dist/style.css";
 import { LatLng, cornerCalTransform, resetOrientation } from "../utils";
 import Swal from "sweetalert2";
-import "../utils/Leaflet.ImageTransform";
-import "../utils/leaflet-rotate";
 import ReactTooltip from "react-tooltip";
 import { capitalizeFirstLetter } from "../utils";
+import { GestureHandling } from "leaflet-gesture-handling";
+
+import "../utils/Leaflet.ImageTransform";
+import "../utils/leaflet-rotate";
+import "leaflet-gesture-handling/dist/leaflet-gesture-handling.css";
+
+L.Map.addInitHook("addHandler", "gestureHandling", GestureHandling);
 
 const joinAnd = (a, sep, fSep) => {
   if (a.length < 2) return a.join('')
@@ -505,6 +510,7 @@ const RouteViewing = (props) => {
         touchRotate: true,
         zoomControl: false,
         attributionControl: false,
+        gestureHandling: true,
       });
       setLeafletMap(newMap);
     } else {
@@ -525,43 +531,34 @@ const RouteViewing = (props) => {
           cropRoute={cropRoute}
           reCalibrate={reCalibrate}
         />
-        <div className="mb-3">
-        {likes.length !== 0 && (<><span data-tip data-for="likers"><button type="button" className="font-weight-bold font-italic btn-dark btn" onClick={dislike}>{likes.length} <i className="fa fa-hands-clapping" /></button></span><ReactTooltip place="right" id="likers"><div style={{whiteSpace: "pre"}}>{likers}</div></ReactTooltip></>)}
-        {canLike && (<> <button type="button" className="btn btn-primary" onClick={grantMedal}>Give a clap <i className="fa fa-hands-clapping" /></button></>)}
-        <> <button type="button" className="btn btn-primary font-weight-bold font-italic" onClick={openComments}>{comments.length} <i className="fa fa-comment"></i></button></>
-        </div>
         {!(cropping || reCalibrating) && (
           <>
             <div>
-              {!isPrivate && (
-                <button
-                  type="button"
-                  style={{ marginBottom: "5px" }}
-                  className="btn btn-sm btn-warning"
-                  onClick={share}
-                >
-                  <i className="fas fa-share"></i> Share
-                </button>
-              )}
-              <br />
               <button
                 type="button"
                 style={{ marginBottom: "5px" }}
                 className="btn btn-sm btn-success"
                 onClick={downloadMap}
               >
-                <i className="fas fa-download"></i> JPEG{" "}
-                {`(Map${includeRoute ? " w/ Route" : ""})`}
+                <i className="fas fa-download"></i> <span>Map+Route</span>
+              </button>
+              &nbsp;<button
+                type="button"
+                style={{ marginBottom: "5px" }}
+                className="btn btn-sm btn-success"
+                onClick={downloadMap}
+              >
+                <i className="fas fa-download"></i> <span>Map</span>
               </button>
               &nbsp;
               <button
                 type="button"
                 style={{ marginBottom: "5px" }}
                 className="btn btn-sm btn-success"
-                onClick={downloadKmz}
+                onClick={downloadMap}
                 data-testid="dl-kmz"
               >
-                <i className="fas fa-download"></i> KMZ (Map)
+                <i className="fas fa-download"></i> <span>KMZ</span>
               </button>
               &nbsp;
               <button
@@ -570,18 +567,8 @@ const RouteViewing = (props) => {
                 className="btn btn-sm btn-success"
                 onClick={downloadGPX}
               >
-                <i className="fas fa-download"></i> GPX (Route)
+                <i className="fas fa-download"></i> <span>GPX</span>
               </button>
-              {hasRouteTime && (
-                <button
-                  type="button"
-                  style={{ marginBottom: "5px" }}
-                  className="btn btn-sm btn-primary float-right"
-                  onClick={props.togglePlayer}
-                >
-                  <i className="fas fa-play"></i> View animation
-                </button>
-              )}
             </div>
             <div>
               <button type="button" className="btn btn-sm btn-default" onClick={toggleHeader}>
@@ -668,7 +655,36 @@ const RouteViewing = (props) => {
               </h3>
             </center>
           )}
-        </div>
+          <div className="my-3 float-right">
+            {likes.length !== 0 && (<>
+            <span data-tip data-for="likers">
+              <button type="button" className="font-weight-bold font-italic btn-dark btn" onClick={dislike}>
+                {likes.length}&nbsp;<i className="fa fa-hands-clapping" />
+              </button>
+            </span>
+            <ReactTooltip place="right" id="likers">
+              <div style={{whiteSpace: "pre"}}>{likers}</div>
+            </ReactTooltip>
+            </>)}
+            <button type="button" className="btn btn-primary font-weight-bold font-italic" onClick={openComments}>
+              {comments.length} <i className="fa fa-comment"></i>
+            </button>
+            {canLike && (<>
+              <button type="button" className="btn btn-primary ml-1" onClick={grantMedal}>
+                <span>Give a clap</span>&nbsp;<i className="fa fa-hands-clapping" />
+              </button>
+            </>)}
+            {!isPrivate && (
+                <button
+                  type="button"
+                  className="btn btn-warning ml-1"
+                  onClick={share}
+                >
+                  <i className="fas fa-share"></i> Share
+                </button>
+              )}
+            </div>
+          </div>
         {shareModalOpen && (
           <ShareModal
             url={"https://mapdu.mp/r/" + props.id}
