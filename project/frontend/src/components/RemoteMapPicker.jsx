@@ -1,11 +1,10 @@
 import React from "react";
-import logo from "../livelox-logo-black.png";
 import logo2 from "../gpsseuranta.png";
 
 const INVALID_URL_MSG = "Invalid livelox or gpsseuranta event URL!";
 const ERROR_LOADING_MSG = "Error fetching livelox or gpsseuranta event map!";
 const SERVICES = {
-    "livelox": /^https:\/\/www\.livelox\.com\/Viewer\/.+\?([^&]+&)?classId=(\d+)(&.+)?$/,
+    // "livelox": /^https:\/\/www\.livelox\.com\/Viewer\/.+\?([^&]+&)?classId=(\d+)(&.+)?$/,
     "gpsseuranta": /^https:\/\/([^.]+\.)?tulospalvelu.fi\/(gps\/)?[^/]+\/$/,
 }
 
@@ -53,8 +52,12 @@ function RemoteMapPicker(props) {
     return <div>
         <form onSubmit={onSubmit}>
             <div className="mb-3">
-                <label className="form-label"><a href="https://livelox.com" target="_blank" rel="noopener noreferrer"><img alt="livelox" src={logo} height="40"/></a><a className="ml-3" href="https://gps.tulospalvelu.fi" target="_blank" rel="noopener noreferrer"><img style={{verticalAlign: "bottom"}}alt="gpsseuranta" src={logo2} height="30"/></a></label>
-                <input className={"form-control" + (!urlError ? "" : " is-invalid")} placeholder="Livelox or GPSSeuranta URL" onChange={onChangeURL} name="url" required={true} autoComplete="off"></input>
+                <label className="form-label">
+                    <a className="ml-3" href="https://gps.tulospalvelu.fi" target="_blank" rel="noopener noreferrer">
+                        <img style={{verticalAlign: "bottom"}}alt="gpsseuranta" src={logo2} height="30"/>
+                    </a>
+                </label>
+                <input className={"form-control" + (!urlError ? "" : " is-invalid")} placeholder="GPSSeuranta URL" onChange={onChangeURL} name="url" required={true} autoComplete="off"></input>
                 { !!urlError && (<div className="invalid-feedback">
                     {urlError}
                 </div>)}
