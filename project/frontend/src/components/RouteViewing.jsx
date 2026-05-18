@@ -55,7 +55,6 @@ const RouteViewing = (props) => {
   const [isPrivate, setIsPrivate] = useState(props.isPrivate);
   const [togglingRoute, setTogglingRoute] = useState();
   const [togglingHeader, setTogglingHeader] = useState();
-  const [imgURL, setImgURL] = useState(null);
   const [imgLoaded, setImgLoaded] = useState(false);
   const [cropping, setCropping] = useState(false);
   const [reCalibrating, setReCalibrating] = useState(false);
@@ -96,25 +95,18 @@ const RouteViewing = (props) => {
     }), ',\n', ',\nand ');
   }, [likes, username]);
 
-  useEffect(() => {
+  const imageUrl = useMemo(() => {
     const qp = new URLSearchParams();
     qp.set("m", props.modificationDate);
-    if (!includeHeader && !includeRoute) {
-      qp.set("out_bounds", "1");
-    }
-    if (includeHeader) {
-      qp.set("show_header", "1");
-    }
+    qp.set("show_header", "1");
     if (includeRoute) {
       qp.set("show_route", "1");
     }
     if (isPrivate) {
       qp.set("auth_token", api_token);
     }
-    const url = props.mapDataURL + "?" + qp.toString();
-    setImgURL(url);
+    return props.mapDataURL + "?" + qp.toString();
   }, [
-    includeHeader,
     includeRoute,
     props.mapDataURL,
     props.modificationDate,
@@ -152,13 +144,13 @@ const RouteViewing = (props) => {
     img.onload = function () {
       const width = img.width,
         height = img.height;
-      setMapImage({ imgURL, width, height });
+      setMapImage({ url: imageUrl, width, height });
       setTogglingHeader(false);
       setTogglingRoute(false);
       setImgLoaded(true);
     };
-    img.src = imgURL;
-  }, [imgURL]);
+    img.src = imageUrl;
+  }, [imageUrl]);
 
   useEffect(() => {
     if (leafletMap && mapImage) {
@@ -170,7 +162,7 @@ const RouteViewing = (props) => {
         leafletMap.unproject([0, 0], 0),
         leafletMap.unproject([mapImage.width, mapImage.height], 0),
       ];
-      new L.imageOverlay(mapImage.imgURL, bounds).addTo(leafletMap);
+      new L.imageOverlay(mapImage.url, bounds).addTo(leafletMap);
 
       setIsBoundSet((isBoundSet) => {
         if (!isBoundSet) {
@@ -208,26 +200,33 @@ const RouteViewing = (props) => {
     }
   }, [leafletMap, mapImage, cropping, props.mapCornersCoords, route]);
 
-  const downloadMap = () => {
+  const getImageName = (includeRoute=true) => {
     const newCorners = getCorners(
       props.mapSize,
       props.mapCornersCoords,
       props.route,
-      includeHeader,
+      true,
       includeRoute
     );
-    const downloadName =
-      name +
-      "_" +
-      (includeRoute ? "" : "blank_") +
+    return name +
+      (includeRoute ? "" : "_blank_") +
       printCornersCoords(newCorners, "_") +
       "_.jpg";
-    fetch(imgURL)
+  }
+
+  const downloadMapRoute = () => {
+    fetch(imageUrl)
       .then((r) => r.blob())
-      .then((b) => saveAs(b, downloadName));
+      .then((b) => saveAs(b, getImageName(true)));
   };
 
-  const downloadKmz = (e) => {
+  const downloadMap = () => {
+    fetch(imageUrl)
+      .then((r) => r.blob())
+      .then((b) => saveAs(b, getImageName(false)));
+  };
+
+  const downloadKmz = () => {
     fetch(props.mapDataURL + (isPrivate ? "?auth_token=" + api_token : ""))
       .then((r) => r.blob())
       .then((blob) => {
@@ -303,7 +302,7 @@ const RouteViewing = (props) => {
       props.mapDataURL + (props.isPrivate ? "?auth_token=" + api_token : ""),
       function (_, width, height) {
         setMapImage({
-          imgURL:
+          url:
             props.mapDataURL +
             (props.isPrivate ? "?auth_token=" + api_token : ""),
           width,
@@ -538,7 +537,7 @@ const RouteViewing = (props) => {
                 type="button"
                 style={{ marginBottom: "5px" }}
                 className="btn btn-sm btn-success"
-                onClick={downloadMap}
+                onClick={downloadMapRoute}
               >
                 <i className="fas fa-download"></i> <span>Map+Route</span>
               </button>
@@ -555,7 +554,7 @@ const RouteViewing = (props) => {
                 type="button"
                 style={{ marginBottom: "5px" }}
                 className="btn btn-sm btn-success"
-                onClick={downloadMap}
+                onClick={downloadKmz}
                 data-testid="dl-kmz"
               >
                 <i className="fas fa-download"></i> <span>KMZ</span>
