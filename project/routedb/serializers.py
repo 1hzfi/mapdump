@@ -348,6 +348,7 @@ class UserRouteListSerializer(serializers.ModelSerializer):
     start_time = serializers.ReadOnlyField()
     distance = serializers.ReadOnlyField()
     duration = serializers.ReadOnlyField()
+    map_bounds = serializers.JSONField(source="raster_map.bounds", required=False, read_only=True)
 
     class Meta:
         model = Route
