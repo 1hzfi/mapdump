@@ -15,7 +15,7 @@ import {
   regionNames,
   getFlagEmoji,
 } from "../utils";
-
+import * as L from "leaflet";
 const urls = [
   "new",
   "map",
@@ -27,17 +27,57 @@ const urls = [
   "account-deletion-confirmation",
 ];
 
+L.Map.addInitHook(function () {
+  // This attaches the map instance to the actual HTML element
+  this.getContainer()._leaflet_map = this; 
+});
+
 const UserView = ({ match, history }) => {
   const [found, setFound] = React.useState(null);
   const [loading, setLoading] = React.useState(null);
   const [data, setData] = React.useState(null);
   const [routes, setRoutes] = React.useState([]);
   const [calendarVal, setCalendarVal] = React.useState([]);
+  const [calendarRoutes, setCalendarRoutes] = React.useState([]);
   const [years, setYears] = React.useState([]);
   const [selectedYear, setSelectedYear] = React.useState(false);
   const [tooltip, showTooltip] = React.useState(false);
+
+  const overviewMapDiv = React.useRef(null);
   const globalState = useGlobalState();
   const { api_token } = globalState.user;
+  
+  const getRandomColor = () => {
+    const letters = "0123456789ABCDEF";
+    let color = "#";
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  };
+
+  const onClickLayer = (e, map, m) => {
+    const point = e.latlng;
+    const layers = [];
+    map.eachLayer((layer) => {
+      if (layer instanceof L.Polygon) {
+        const bounds = layer.getBounds();
+        if (bounds.contains(point)) {
+          layers.push(layer);
+        }
+      }
+    });
+    e.target
+      .bindPopup(
+        layers
+          .map((n) => {
+            const r = n.myData;
+            return `<span><a href="/routes/${r.id}"><i class='fa fa-circle' style="color: ${n.options.color}"></i> ${r.name}</a></span>`
+          })
+          .join("<br/>")
+      )
+      .openPopup();
+  };
 
   React.useEffect(() => {
     if (urls.includes(match.params.username)) {
@@ -112,6 +152,70 @@ const UserView = ({ match, history }) => {
       }
     }
   }, [match.params.date, match.params.year, data?.routes]);
+
+  React.useEffect(() => {
+    if (overviewMapDiv.current) {
+      let map = overviewMapDiv.current._leaflet_map;
+      if (!map) {
+        overviewMapDiv.current.style.minHeight = "150px"
+        map = L.map("overview-map", {
+          minZoom: 0,
+          maxZoom: 18,
+          zoomSnap: 0,
+          scrollWheelZoom: true,
+          zoomControl: false,
+          attributionControl: false,
+        });
+        L.TileLayer.Common = L.TileLayer.extend({
+          initialize: function (options) {
+            L.TileLayer.prototype.initialize.call(this, this.url, options);
+          },
+        });
+        const osmLayer = L.TileLayer.Common.extend({
+          url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+          options: {
+            referrerPolicy: "origin",    
+          },
+        });
+        map.addLayer(new osmLayer());
+        const bounds = [L.latLng(-180, 60), L.latLng(180, -60)];
+        map.fitBounds(bounds);
+        map.invalidateSize();
+        (async () => {
+          const locInfoResponse = await fetch(
+            "https://api.routechoices.com/check-latlon"
+          );
+          const locInfo = await locInfoResponse.json();
+          if (locInfo.status === "success") {
+            map.setView([locInfo.lat, locInfo.lon], 10, {
+              duration: 0,
+            });
+          }
+        })();
+      }
+      map.eachLayer((l) => {
+        if (l.myData) {
+          l.remove();
+        }
+      })
+      routes.forEach((r) => {
+        const boundRaw = r.map_bounds;
+        const bound = [
+          boundRaw.top_left,
+          boundRaw.top_right,
+          boundRaw.bottom_right,
+          boundRaw.bottom_left,
+        ];
+        const color = getRandomColor();
+        const polygon = new L.Polygon(bound, { color });
+        polygon.myData = r;
+        polygon.on("click", (e) => {
+          onClickLayer(e, map);
+        });
+        map.addLayer(polygon);
+      });
+    }
+  }, [overviewMapDiv, routes]);
 
   React.useEffect(() => {
     const y = [];
@@ -242,69 +346,74 @@ const UserView = ({ match, history }) => {
                 : [...accu, <span key={`spacer-${idx}`} style={{fontSize: '0.6em'}}> | </span>, elem];
             }, null)}
           </h3>
-          <div>
-            {years.map((y) => (
-              <span key={y}>
-                {selectedYear !== y ? (
-                  <Link to={`/athletes/${data.username}/${y}`}>{y}</Link>
-                ) : (
-                  <b>
+          <div className="row mb-3">
+            <div className="col-lg-9">
+              <div>
+              {years.map((y) => (
+                <span key={y}>
+                  {selectedYear !== y ? (
                     <Link to={`/athletes/${data.username}/${y}`}>{y}</Link>
-                  </b>
-                )}
-                <> </>
-              </span>
-            ))}
+                  ) : (
+                    <b>
+                      <Link to={`/athletes/${data.username}/${y}`}>{y}</Link>
+                    </b>
+                  )}
+                  <> </>
+                </span>
+              ))}
+              </div>
+            <div
+                onMouseEnter={() => showTooltip(true)}
+                onMouseLeave={() => {
+                  showTooltip(false);
+                  setTimeout(() => showTooltip(true), 50);
+                }}>
+              <CalendarHeatmap
+                startDate={
+                  selectedYear
+                    ? DateTime.local(parseInt(selectedYear, 10), 1, 1)
+                        .startOf("day")
+                        .toJSDate()
+                    : shiftDate(new Date(), -365)
+                }
+                endDate={
+                  selectedYear
+                    ? DateTime.local(parseInt(selectedYear, 10), 12, 31)
+                        .endOf("day")
+                        .toJSDate()
+                    : new Date()
+                }
+                values={calendarVal}
+                classForValue={(value) => {
+                  if (!value?.count) {
+                    return "color-empty";
+                  }
+                  return "color-rasti-1";
+                }}
+                tooltipDataAttrs={(value) => {
+                  return {
+                    "data-tip":
+                      `${DateTime.fromJSDate(value.date)
+                        .setLocale("en-US")
+                        .toLocaleString(DateTime.DATE_HUGE)} has ${
+                        value.count
+                      } route` + (value.count !== 1 ? "s" : ""),
+                  };
+                }}
+                showWeekdayLabels={true}
+                onClick={(v) => {
+                  if (v.count) {
+                    const dateStr = DateTime.fromJSDate(v.date).toFormat(
+                      "yyyy-MM-dd"
+                    );
+                    history.push(`/athletes/${data.username}/${dateStr}`);
+                  }
+                }}
+              ></CalendarHeatmap>
+              {tooltip && <ReactTooltip effect="solid" />}
+            </div>
           </div>
-          <div
-              onMouseEnter={() => showTooltip(true)}
-              onMouseLeave={() => {
-                showTooltip(false);
-                setTimeout(() => showTooltip(true), 50);
-              }}>
-            <CalendarHeatmap
-              startDate={
-                selectedYear
-                  ? DateTime.local(parseInt(selectedYear, 10), 1, 1)
-                      .startOf("day")
-                      .toJSDate()
-                  : shiftDate(new Date(), -365)
-              }
-              endDate={
-                selectedYear
-                  ? DateTime.local(parseInt(selectedYear, 10), 12, 31)
-                      .endOf("day")
-                      .toJSDate()
-                  : new Date()
-              }
-              values={calendarVal}
-              classForValue={(value) => {
-                if (!value?.count) {
-                  return "color-empty";
-                }
-                return "color-rasti-1";
-              }}
-              tooltipDataAttrs={(value) => {
-                return {
-                  "data-tip":
-                    `${DateTime.fromJSDate(value.date)
-                      .setLocale("en-US")
-                      .toLocaleString(DateTime.DATE_HUGE)} has ${
-                      value.count
-                    } route` + (value.count !== 1 ? "s" : ""),
-                };
-              }}
-              showWeekdayLabels={true}
-              onClick={(v) => {
-                if (v.count) {
-                  const dateStr = DateTime.fromJSDate(v.date).toFormat(
-                    "yyyy-MM-dd"
-                  );
-                  history.push(`/athletes/${data.username}/${dateStr}`);
-                }
-              }}
-            ></CalendarHeatmap>
-            {tooltip && <ReactTooltip effect="solid" />}
+          <div className="col-lg-3 border mt-lg-4 mx-3 mx-lg-0" id="overview-map" ref={overviewMapDiv}></div>
           </div>
           <div className="container">
             <div className="row">
