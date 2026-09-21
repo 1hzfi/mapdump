@@ -363,6 +363,7 @@ class UserRouteListSerializer(serializers.ModelSerializer):
             "country",
             "name",
             "is_private",
+            "map_bounds",
         )
 
 
