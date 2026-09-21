@@ -181,6 +181,13 @@ const UserView = ({ match, history }) => {
         const bounds = [L.latLng(-180, 60), L.latLng(180, -60)];
         map.fitBounds(bounds);
         map.invalidateSize();
+      }
+      map.eachLayer((l) => {
+        if (l.myData) {
+          l.remove();
+        }
+      })
+      if (!routes.length) {
         (async () => {
           const locInfoResponse = await fetch(
             "https://api.routechoices.com/check-latlon"
@@ -192,28 +199,27 @@ const UserView = ({ match, history }) => {
             });
           }
         })();
-      }
-      map.eachLayer((l) => {
-        if (l.myData) {
-          l.remove();
-        }
-      })
-      routes.forEach((r) => {
-        const boundRaw = r.map_bounds;
-        const bound = [
-          boundRaw.top_left,
-          boundRaw.top_right,
-          boundRaw.bottom_right,
-          boundRaw.bottom_left,
-        ];
-        const color = getRandomColor();
-        const polygon = new L.Polygon(bound, { color });
-        polygon.myData = r;
-        polygon.on("click", (e) => {
-          onClickLayer(e, map);
+      } else {
+        const mapsBound = new L.LatLngBounds();
+        routes.forEach((r) => {
+          const boundRaw = r.map_bounds;
+          const bound = [
+            boundRaw.top_left,
+            boundRaw.top_right,
+            boundRaw.bottom_right,
+            boundRaw.bottom_left,
+          ];
+          mapsBound.extend(bound)
+          const color = getRandomColor();
+          const polygon = new L.Polygon(bound, { color });
+          polygon.myData = r;
+          polygon.on("click", (e) => {
+            onClickLayer(e, map);
+          });
+          map.addLayer(polygon);
         });
-        map.addLayer(polygon);
-      });
+        map.fitBounds(mapsBound.pad(0.1));
+      }
     }
   }, [overviewMapDiv, routes]);
 
