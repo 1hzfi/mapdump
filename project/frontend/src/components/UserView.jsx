@@ -16,6 +16,8 @@ import {
   getFlagEmoji,
 } from "../utils";
 import * as L from "leaflet";
+import { FullScreen } from 'leaflet.fullscreen';
+import 'leaflet.fullscreen/dist/Control.FullScreen.css';
 const urls = [
   "new",
   "map",
@@ -166,6 +168,11 @@ const UserView = ({ match, history }) => {
           zoomControl: false,
           attributionControl: false,
         });
+        map.addControl(
+          new FullScreen({
+            position: 'topright',
+          })
+        );
         L.TileLayer.Common = L.TileLayer.extend({
           initialize: function (options) {
             L.TileLayer.prototype.initialize.call(this, this.url, options);

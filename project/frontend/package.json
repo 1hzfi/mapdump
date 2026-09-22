@@ -18,6 +18,7 @@
     "jszip": "^3.8.0",
     "leaflet": "^1.9.4",
     "leaflet-gesture-handling": "^1.2.2",
+    "leaflet.fullscreen": "^5.3.3",
     "luxon": "^2.5.2",
     "prop-types": "^15.8.1",
     "react": "^18.1.0",
