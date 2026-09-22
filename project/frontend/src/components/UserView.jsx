@@ -40,7 +40,6 @@ const UserView = ({ match, history }) => {
   const [data, setData] = React.useState(null);
   const [routes, setRoutes] = React.useState([]);
   const [calendarVal, setCalendarVal] = React.useState([]);
-  const [calendarRoutes, setCalendarRoutes] = React.useState([]);
   const [years, setYears] = React.useState([]);
   const [selectedYear, setSelectedYear] = React.useState(false);
   const [tooltip, showTooltip] = React.useState(false);
@@ -171,6 +170,7 @@ const UserView = ({ match, history }) => {
         map.addControl(
           new FullScreen({
             position: 'topright',
+            forcePseudoFullscreen: true,
           })
         );
         L.TileLayer.Common = L.TileLayer.extend({
@@ -426,7 +426,7 @@ const UserView = ({ match, history }) => {
               {tooltip && <ReactTooltip effect="solid" />}
             </div>
           </div>
-          <div className="col-lg-3 border mt-lg-4 mx-3 mx-lg-0" id="overview-map" ref={overviewMapDiv}></div>
+          <div className="col-lg-3 mt-lg-4 mx-3 mx-lg-0"><div className="border" id="overview-map" ref={overviewMapDiv}></div></div>
           </div>
           <div className="container">
             <div className="row">
