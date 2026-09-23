@@ -299,22 +299,6 @@ class RouteDetail(generics.RetrieveUpdateDestroyAPIView):
         return super().destroy(request, *args, **kwargs)
 
 
-@api_view(["GET"])
-def raster_map_download(request, uid, *args, **kwargs):
-    rmap = get_object_or_404(
-        RasterMap.objects.filter(Q(athlete_id=request.user.id) | Q(is_private=False)),
-        uid=uid,
-    )
-    file_path = rmap.path
-    mime_type = rmap.mime_type
-    return serve_from_s3(
-        settings.AWS_S3_BUCKET,
-        request,
-        file_path,
-        filename="{}.{}".format(rmap.uid, mime_type[6:]),
-        mime=mime_type,
-    )
-
 
 @api_view(["GET"])
 def map_download(request, uid, *args, **kwargs):

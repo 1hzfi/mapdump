@@ -332,10 +332,6 @@ class RasterMap(models.Model):
         return data_out
 
     @property
-    def image_url(self):
-        return reverse("raster_map_image", kwargs={"uid": self.uid})
-
-    @property
     def location_image_url(self):
         return reverse("raster_map_location_image", kwargs={"uid": self.uid})
 
