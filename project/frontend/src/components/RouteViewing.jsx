@@ -139,6 +139,21 @@ const RouteViewing = (props) => {
   }, [props.comments]);
 
   useEffect(() => {
+    if (animating) {
+      setIncludeRoute(false);
+      setTogglingRoute(true);
+    } else {
+      setIncludeRoute((s) => {
+        if (s === false) {
+          setTogglingRoute(true);
+          return true;
+        }
+        return false;
+      });
+    }
+  }, [animating]);
+
+  useEffect(() => {
     var img = new Image();
     img.crossOrigin = "anonymous";
     img.onload = function () {
@@ -261,13 +276,6 @@ const RouteViewing = (props) => {
       props.gpx + (isPrivate ? "?auth_token=" + api_token : ""),
       name + ".gpx"
     );
-  };
-
-  const toggleHeader = (ev) => {
-    if (togglingHeader) {
-      return;
-    }
-    setTogglingHeader(true);
   };
 
   const toggleRoute = (ev) => {
@@ -535,11 +543,11 @@ const RouteViewing = (props) => {
     setCommentsOpen(true)
   }
 
+
+
   const animate = (e) => {
     e.preventDefault();
     if (animating) return;
-    setIncludeRoute(false);
-    setTogglingRoute(true);
     setAnimating(true);
     const newCorners = getCorners(
       props.mapSize,
@@ -557,8 +565,6 @@ const RouteViewing = (props) => {
       newCorners.bottom_left,
 
     );
-    console.log(props.mapSize, newCorners)
-    console.log(mapImage, props.mapCornersCoords)
     let marker = L.circleMarker([0,0], {radius: 7, fillColor: "red", color: "black", weight: 2, fillOpacity:1}).addTo(leafletMap);
     let trail = L.polyline([], {color: "red"}).addTo(leafletMap);
     (async () => {
@@ -568,9 +574,10 @@ const RouteViewing = (props) => {
             new LatLng(pos.coords.latitude, pos.coords.longitude)
           );
           marker.setLatLng([-pt.y, pt.x]);
-          marker.addTo(leafletMap)
-          trail.addTo(leafletMap)
           trail.addLatLng([-pt.y, pt.x]);
+          trail.addTo(leafletMap);
+          marker.addTo(leafletMap);
+          marker.bringToFront();
           let wait = 0;
           if (route?.[idx + 1]) {
             if (route[idx + 1].timestamp && pos.timestamp) {
@@ -582,15 +589,12 @@ const RouteViewing = (props) => {
           await new Promise((done) => setTimeout(done, wait * 2));
         }
       };
-      marker.remove();
-      trail.remove();
-      setAnimating(false);
-      if (!includeRoute) {
-        setIncludeRoute(true);
-        setTogglingRoute(true);
-      }
-    })();
-    
+      setTimeout(() => {
+        marker.remove();
+        trail.remove();
+        setAnimating(false);
+      }, 1000);
+    })(); 
   }
   return (
     <>
