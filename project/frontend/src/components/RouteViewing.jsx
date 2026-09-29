@@ -146,9 +146,9 @@ const RouteViewing = (props) => {
       setIncludeRoute((s) => {
         if (s === false) {
           setTogglingRoute(true);
-          return true;
+          
         }
-        return false;
+        return true;
       });
     }
   }, [animating]);
